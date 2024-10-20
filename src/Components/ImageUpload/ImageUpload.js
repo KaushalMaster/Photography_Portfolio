@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -9,12 +9,28 @@ import {
   Typography,
   Snackbar,
   CircularProgress,
+  Grid,
+  IconButton,
 } from "@mui/material";
-import { CloudUpload } from "@mui/icons-material";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, imgDB } from "../../firebase"; // Make sure this is your Firebase storage
+import { CloudUpload, Delete } from "@mui/icons-material";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
+import { db, imgDB } from "../../firebase";
 import { useForm } from "react-hook-form";
-import { getFirestore, doc, setDoc } from "firebase/firestore"; // Firestore imports
+import {
+  doc,
+  setDoc,
+  deleteDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
+
+// Import Google Fonts
+import "@fontsource/roboto"; // You can use other font families
 
 const categories = ["Pre-Wedding", "Portraits", "Street", "Events"];
 
@@ -23,6 +39,8 @@ const ImageUpload = () => {
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [images, setImages] = useState([]);
+  const [deleting, setDeleting] = useState(false);
 
   const {
     register,
@@ -37,11 +55,33 @@ const ImageUpload = () => {
     },
   });
 
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const imagesCollection = collection(db, "Images");
+        const snapshot = await getDocs(imagesCollection);
+        const imageData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setImages(imageData);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(file);
     }
+  };
+
+  const clearSelectedImage = () => {
+    setSelectedImage(null);
   };
 
   const saveImageDataToFirestore = async (imageUrl, category) => {
@@ -52,11 +92,27 @@ const ImageUpload = () => {
         category,
         createdAt: new Date(),
       });
-      console.log("Document written with ID: ", docRef.id);
       return true;
     } catch (error) {
       console.error("Error adding document: ", error);
       return false;
+    }
+  };
+
+  const deleteImageFromFirestore = async (id, imageUrl) => {
+    setDeleting(true);
+    try {
+      await deleteDoc(doc(db, "Images", id));
+      const storageRef = ref(imgDB, imageUrl);
+      await deleteObject(storageRef);
+      setImages(images.filter((image) => image.id !== id));
+      setSnackbarMessage("Image deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+      setSnackbarMessage("Failed to delete image.");
+    } finally {
+      setDeleting(false);
+      setSnackbarOpen(true);
     }
   };
 
@@ -73,8 +129,6 @@ const ImageUpload = () => {
     try {
       const snapshot = await uploadBytes(storageRef, selectedImage);
       const downloadURL = await getDownloadURL(snapshot.ref);
-
-      // Save image URL and category to Firestore
       const isSaved = await saveImageDataToFirestore(
         downloadURL,
         data.category
@@ -90,6 +144,13 @@ const ImageUpload = () => {
 
       reset();
       setSelectedImage(null);
+      const imagesCollection = collection(db, "Images");
+      const snapshotImages = await getDocs(imagesCollection);
+      const imageData = snapshotImages.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setImages(imageData);
     } catch (error) {
       console.error("Upload failed:", error);
       setSnackbarMessage("Upload failed. Please try again.");
@@ -106,99 +167,232 @@ const ImageUpload = () => {
 
   return (
     <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
       sx={{
-        maxWidth: 400,
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        maxWidth: "100%",
         margin: "auto",
-        padding: 2,
-        boxShadow: 3,
-        borderRadius: 2,
+        overflow: "hidden",
+        fontFamily: "Roboto, sans-serif",
       }}
     >
-      <Typography variant="h6" align="center" gutterBottom>
-        Upload Your Image
-      </Typography>
+      {/* Left Container: Image Upload Form */}
       <Box
         sx={{
-          width: "100%",
-          height: 200,
-          border: "2px dashed #ccc",
-          borderRadius: 2,
+          flex: 1,
           display: "flex",
-          alignItems: "center",
           justifyContent: "center",
-          mb: 2,
-          backgroundColor: "#f9f9f9",
+          alignItems: "center",
+          backgroundColor: "#121212",
+          color: "#FFFFFF",
+          padding: 4,
+          overflow: "auto",
+          minWidth: 300,
+          flexDirection: "column",
+          fontFamily: "Roboto, sans-serif",
         }}
       >
-        {loading ? (
-          <CircularProgress />
-        ) : selectedImage ? (
-          <img
-            src={URL.createObjectURL(selectedImage)}
-            alt="Preview"
-            style={{
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ width: "100%", maxWidth: 400 }} // Remove bottom margin for no scroll
+        >
+          <Typography variant="h6" align="center" gutterBottom>
+            Upload Your Image
+          </Typography>
+          <Box
+            sx={{
               width: "100%",
-              height: "100%",
-              objectFit: "cover",
+              height: 200,
+              border: "2px dashed #ccc",
               borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              mb: 2,
+              backgroundColor: "#2A2A2A",
             }}
-          />
-        ) : (
-          <label htmlFor="upload-button" style={{ cursor: "pointer" }}>
-            <input
-              accept="image/*"
-              id="upload-button"
-              type="file"
-              style={{ display: "none" }}
-              onChange={(e) => {
-                handleImageChange(e);
-                register("image").onChange(e);
+          >
+            {loading ? (
+              <CircularProgress />
+            ) : selectedImage ? (
+              <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+                <img
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Preview"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: 2,
+                  }}
+                />
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={clearSelectedImage}
+                  sx={{
+                    position: "absolute",
+                    bottom: 8,
+                    left: 8,
+                    zIndex: 1,
+                  }}
+                >
+                  Clear Image
+                </Button>
+              </Box>
+            ) : (
+              <label htmlFor="upload-button" style={{ cursor: "pointer" }}>
+                <input
+                  accept="image/*"
+                  id="upload-button"
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    handleImageChange(e);
+                    register("image").onChange(e);
+                  }}
+                />
+                <CloudUpload fontSize="large" color="action" />
+                <Typography variant="body2" color="textSecondary">
+                  Drag and drop or click to upload
+                </Typography>
+              </label>
+            )}
+          </Box>
+
+          <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+            <InputLabel
+              id="category-label"
+              sx={{ color: "white", fontFamily: "Roboto, sans-serif" }}
+            >
+              Select Category
+            </InputLabel>
+            <Select
+              labelId="category-label"
+              {...register("category", { required: "Category is required." })}
+              error={!!errors.category}
+              value={watch("category") || ""}
+              sx={{
+                backgroundColor: "#2A2A2A",
+                color: "white",
+                "& .MuiSelect-icon": {
+                  color: "white",
+                },
+                "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white",
+                },
+                "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                  {
+                    borderColor: "white",
+                  },
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                  {
+                    borderColor: "white",
+                  },
               }}
-            />
-            <CloudUpload fontSize="large" color="action" />
-            <Typography variant="body2" color="textSecondary">
-              Drag and drop or click to upload
-            </Typography>
-          </label>
-        )}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: "#2A2A2A",
+                    color: "white",
+                  },
+                },
+              }}
+            >
+              <MenuItem value="" disabled>
+                <em style={{ color: "#aaa" }}>Select a category</em>
+              </MenuItem>
+              {categories.map((cat) => (
+                <MenuItem key={cat} value={cat}>
+                  {cat}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.category && (
+              <Typography variant="caption" color="error">
+                {errors.category.message}
+              </Typography>
+            )}
+          </FormControl>
+
+          <Button
+            variant="primary"
+            fullWidth
+            type="submit"
+            disabled={loading || !selectedImage}
+            sx={{
+              backgroundColor: "#FFFFFF",
+              color: "black",
+              "&:hover": {
+                backgroundColor: "#f0f0f0",
+              },
+            }}
+          >
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Upload Image"
+            )}
+          </Button>
+        </Box>
       </Box>
 
-      <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-        <InputLabel id="category-label">Category</InputLabel>
-        <Select
-          labelId="category-label"
-          {...register("category", { required: "Category is required." })}
-          error={!!errors.category}
-          value={watch("category") || ""}
-        >
-          {categories.map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
-            </MenuItem>
-          ))}
-        </Select>
-        {errors.category && (
-          <Typography variant="caption" color="error">
-            {errors.category.message}
-          </Typography>
-        )}
-      </FormControl>
-
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        type="submit"
-        disabled={loading || !selectedImage}
+      {/* Right Container: Uploaded Images */}
+      <Box
+        sx={{
+          flex: 1,
+          backgroundColor: "#1e1e1e",
+          color: "#FFFFFF",
+          padding: 2,
+          overflowY: "auto",
+        }}
       >
-        {loading ? (
-          <CircularProgress size={24} color="inherit" />
-        ) : (
-          "Upload Image"
-        )}
-      </Button>
+        <Typography variant="h6" align="center" sx={{ mb: 2 }}>
+          Uploaded Images
+        </Typography>
+        <Grid container spacing={2}>
+          {images.map((image) => (
+            <Grid item xs={12} sm={6} md={4} key={image.id}>
+              <Box
+                sx={{
+                  position: "relative",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                  backgroundColor: "#2A2A2A",
+                }}
+              >
+                <img
+                  src={image.imageUrl}
+                  alt={image.category}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+                <IconButton
+                  onClick={() =>
+                    deleteImageFromFirestore(image.id, image.imageUrl)
+                  }
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    color: "red",
+                  }}
+                >
+                  {deleting ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    <Delete />
+                  )}
+                </IconButton>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
 
       <Snackbar
         open={snackbarOpen}

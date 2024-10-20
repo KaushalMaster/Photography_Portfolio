@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { Grid, Paper, Typography, Chip, Skeleton } from "@mui/material";
+import { Grid, Paper, Typography, Chip, Skeleton, Box } from "@mui/material";
 import { db } from "../../firebase";
 
 // Import Google Fonts
@@ -67,11 +67,15 @@ const ImageGrid = () => {
       >
         Image Gallery
       </Typography>
-      <div
-        style={{
+
+      {/* Chips Container with Padding */}
+      <Box
+        sx={{
           display: "flex",
           justifyContent: "center",
           marginBottom: "30px",
+          flexWrap: "nowrap", // Prevent wrapping
+          padding: { xs: "0 10px", md: "0" }, // Responsive padding
         }}
       >
         <Chip
@@ -118,13 +122,12 @@ const ImageGrid = () => {
             }}
           />
         ))}
-      </div>
+      </Box>
+
       <Grid container spacing={2}>
         {loading || loadingImages ? (
           Array.from(new Array(6)).map((_, index) => (
             <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
-              {" "}
-              {/* Change here to lg={4} for 3 items in a row */}
               <Paper
                 elevation={3}
                 style={{ borderRadius: "10px", overflow: "hidden" }}
@@ -136,8 +139,6 @@ const ImageGrid = () => {
         ) : filteredImages.length > 0 ? (
           filteredImages.map(({ id, imageUrl }) => (
             <Grid item xs={12} sm={6} md={4} lg={4} key={id}>
-              {" "}
-              {/* Change here to lg={4} for 3 items in a row */}
               <Paper
                 elevation={6}
                 style={{
