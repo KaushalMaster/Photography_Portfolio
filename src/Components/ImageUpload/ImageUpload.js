@@ -29,9 +29,6 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-// Import Google Fonts
-import "@fontsource/roboto"; // You can use other font families
-
 const categories = ["Pre-Wedding", "Portraits", "Street", "Events"];
 
 const ImageUpload = () => {
@@ -172,30 +169,27 @@ const ImageUpload = () => {
         flexDirection: { xs: "column", md: "row" },
         maxWidth: "100%",
         margin: "auto",
-        overflow: "hidden",
         fontFamily: "Roboto, sans-serif",
+        height: "100vh", // Make the container full height
       }}
     >
       {/* Left Container: Image Upload Form */}
       <Box
         sx={{
-          flex: 1,
+          flex: "0 0 400px", // Fixed width for left container
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "#121212",
           color: "#FFFFFF",
           padding: 4,
-          overflow: "auto",
-          minWidth: 300,
-          flexDirection: "column",
-          fontFamily: "Roboto, sans-serif",
+          overflow: "hidden",
         }}
       >
         <Box
           component="form"
           onSubmit={handleSubmit(onSubmit)}
-          sx={{ width: "100%", maxWidth: 400 }} // Remove bottom margin for no scroll
+          sx={{ width: "100%", maxWidth: 400 }}
         >
           <Typography variant="h6" align="center" gutterBottom>
             Upload Your Image
@@ -345,7 +339,7 @@ const ImageUpload = () => {
           backgroundColor: "#1e1e1e",
           color: "#FFFFFF",
           padding: 2,
-          overflowY: "auto",
+          overflowY: "auto", // Make this container scrollable
         }}
       >
         <Typography variant="h6" align="center" sx={{ mb: 2 }}>
