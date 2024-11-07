@@ -54,6 +54,9 @@ const ImageGrid = () => {
         minHeight: "100vh",
       }}
     >
+      <Box>
+        <img src="/Email_Signatuer_Logo.png" width="100" />
+      </Box>
       <Typography
         variant="h4"
         align="center"
