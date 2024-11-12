@@ -29,7 +29,14 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-const categories = ["Pre-Wedding", "Portraits", "Street", "Events"];
+const categories = [
+  "Wedding",
+  "Pre-Wedding",
+  "Events",
+  "Street",
+  "Portraits",
+  "Food",
+];
 
 const ImageUpload = () => {
   const [selectedImage, setSelectedImage] = useState(null);

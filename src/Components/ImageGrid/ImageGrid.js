@@ -6,7 +6,14 @@ import { db } from "../../firebase";
 // Import Google Fonts
 import "@fontsource/roboto"; // You can use other font families
 
-const categories = ["Pre-Wedding", "Events", "Street", "Portraits"];
+const categories = [
+  "Wedding",
+  "Pre-Wedding",
+  "Events",
+  "Street",
+  "Portraits",
+  "Food",
+];
 
 const ImageGrid = () => {
   const [images, setImages] = useState([]);
@@ -71,13 +78,13 @@ const ImageGrid = () => {
         Image Gallery
       </Typography>
 
-      {/* Chips Container with Padding */}
+      {/* Horizontally Scrollable Chips Container */}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           marginBottom: "30px",
-          flexWrap: "nowrap", // Prevent wrapping
+          overflowX: "auto", // Allow horizontal scroll
           padding: { xs: "0 10px", md: "0" }, // Responsive padding
         }}
       >
