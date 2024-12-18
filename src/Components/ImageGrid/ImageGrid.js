@@ -186,7 +186,7 @@ const ImageGrid = () => {
               align="center"
               style={{ color: "#ffffff" }}
             >
-              No images available for this categor.
+              No images available for this category.
             </Typography>
           </Grid>
         )}
