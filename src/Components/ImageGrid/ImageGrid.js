@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { Grid, Paper, Typography, Chip, Skeleton, Box } from "@mui/material";
+import { Paper, Typography, Chip, Skeleton, Box } from "@mui/material";
+import Masonry from "@mui/lab/Masonry"; // Import Masonry from Material-UI Lab
 import { db } from "../../firebase";
 
 // Import Google Fonts
@@ -62,7 +63,7 @@ const ImageGrid = () => {
       }}
     >
       <Box>
-        <img src="/Email_Signatuer_Logo.png" width="100" />
+        <img src="/Email_Signatuer_Logo.png" width="100" alt="Logo" />
       </Box>
       <Typography
         variant="h4"
@@ -134,63 +135,56 @@ const ImageGrid = () => {
         ))}
       </Box>
 
-      <Grid container spacing={2}>
+      {/* Masonry Layout for Images */}
+      <Masonry columns={4} spacing={2}>
         {loading || loadingImages ? (
           Array.from(new Array(6)).map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
-              <Paper
-                elevation={3}
-                style={{ borderRadius: "10px", overflow: "hidden" }}
-              >
-                <Skeleton variant="rectangular" width="100%" height={200} />
-              </Paper>
-            </Grid>
+            <Paper key={index} elevation={3} style={{ borderRadius: "10px" }}>
+              <Skeleton variant="rectangular" width="100%" height={200} />
+            </Paper>
           ))
         ) : filteredImages.length > 0 ? (
           filteredImages.map(({ id, imageUrl }) => (
-            <Grid item xs={12} sm={6} md={4} lg={4} key={id}>
-              <Paper
-                elevation={6}
-                style={{
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
-                  backgroundColor: "#000",
-                  transition: "transform 0.3s, box-shadow 0.3s",
-                  "&:hover": {
-                    transform: "scale(1.05)",
-                    boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.3)",
-                  },
-                }}
+            <Paper
+              key={id}
+              elevation={6}
+              style={{
+                borderRadius: "16px",
+                overflow: "hidden",
+                backgroundColor: "#000",
+                transition: "transform 0.3s, box-shadow 0.3s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.3)",
+                },
+              }}
+            >
+              <div
+                style={{ width: "100%", height: "auto", overflow: "hidden" }}
               >
-                <div style={{ width: "100%", height: 500, overflow: "hidden" }}>
-                  <img
-                    src={imageUrl}
-                    alt={`Image`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain", // Changed to contain for better fitting
-                      borderRadius: "16px 16px 0 0",
-                    }}
-                  />
-                </div>
-              </Paper>
-            </Grid>
+                <img
+                  src={imageUrl}
+                  alt={`Image`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain", // Changed to contain for better fitting
+                    borderRadius: "16px 16px 0 0",
+                  }}
+                />
+              </div>
+            </Paper>
           ))
         ) : (
-          <Grid item xs={12}>
-            <Typography
-              variant="h6"
-              align="center"
-              style={{ color: "#ffffff" }}
-            >
-              No images available for this category.
-            </Typography>
-          </Grid>
+          <Typography
+            variant="h6"
+            align="center"
+            style={{ color: "#ffffff", gridColumn: "span 4" }}
+          >
+            No images available for this category.
+          </Typography>
         )}
-      </Grid>
+      </Masonry>
     </div>
   );
 };
