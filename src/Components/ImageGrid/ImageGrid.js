@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { Paper, Typography, Chip, Skeleton, Box } from "@mui/material";
+import {
+  Paper,
+  Typography,
+  Chip,
+  Skeleton,
+  Box,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import Masonry from "@mui/lab/Masonry"; // Import Masonry from Material-UI Lab
 import { db } from "../../firebase";
 
@@ -21,6 +29,10 @@ const ImageGrid = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [loadingImages, setLoadingImages] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false); // Track if images are loaded
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -53,6 +65,10 @@ const ImageGrid = () => {
     selectedCategory === "All"
       ? images
       : images.filter((image) => image.category === selectedCategory);
+
+  const handleImageLoad = () => {
+    setImagesLoaded(true); // Trigger image loaded state
+  };
 
   return (
     <div
@@ -136,7 +152,7 @@ const ImageGrid = () => {
       </Box>
 
       {/* Masonry Layout for Images */}
-      <Masonry columns={4} spacing={2}>
+      <Masonry columns={isMobile ? 2 : 4} spacing={2}>
         {loading || loadingImages ? (
           Array.from(new Array(6)).map((_, index) => (
             <Paper key={index} elevation={3} style={{ borderRadius: "10px" }}>
@@ -170,7 +186,11 @@ const ImageGrid = () => {
                     height: "100%",
                     objectFit: "contain", // Changed to contain for better fitting
                     borderRadius: "16px 16px 0 0",
+                    opacity: imagesLoaded ? 1 : 0, // Fade-in effect
+                    transition: "opacity 0.5s ease-in-out", // Smooth transition
                   }}
+                  onLoad={handleImageLoad} // Set imagesLoaded to true once image is loaded
+                  onError={(e) => (e.target.src = "/placeholder-image.jpg")} // Placeholder image on error
                 />
               </div>
             </Paper>
