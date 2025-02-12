@@ -106,7 +106,7 @@ const ImageGrid = () => {
       }}
     >
       <Box>
-        <img src="/Email_Signatuer_logo.png" width="100" alt="Logo" />
+        <img src="/Email_Signatuer_Logo.png" width="100" alt="Logo" />
       </Box>
       <Typography
         variant="h4"
