@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
 import {
   Paper,
   Typography,
   Chip,
   Skeleton,
   Box,
+  Button,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import Masonry from "@mui/lab/Masonry"; // Import Masonry from Material-UI Lab
-import { db } from "../../firebase";
-
-// Import Google Fonts
 import "@fontsource/roboto"; // You can use other font families
 
 const categories = [
@@ -30,21 +27,25 @@ const ImageGrid = () => {
   const [loading, setLoading] = useState(true);
   const [loadingImages, setLoadingImages] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false); // Track if images are loaded
+  const [currentBatch, setCurrentBatch] = useState(12); // Track how many images are displayed
+  const [totalImages, setTotalImages] = useState(0); // Total number of images in the category
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    const fetchImages = async () => {
+    const fetchImages = async (category) => {
       setLoading(true);
       try {
-        const imagesCollection = collection(db, "Images");
-        const snapshot = await getDocs(imagesCollection);
-        const imageData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setImages(imageData);
+        const response = await fetch(`/data/${category}.json`); // Fetch the JSON based on the selected category
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          setImages(data);
+          setTotalImages(data.length); // Store the total number of images
+        } else {
+          console.error("Fetched data is not an array:", data);
+        }
       } catch (error) {
         console.error("Error fetching images:", error);
       } finally {
@@ -52,23 +53,48 @@ const ImageGrid = () => {
       }
     };
 
-    fetchImages();
-  }, []);
+    if (selectedCategory === "All") {
+      const allImages = [];
+      let categoriesFetched = 0;
+
+      categories.forEach((category) => {
+        fetchImages(category).then((data) => {
+          if (Array.isArray(data)) {
+            allImages.push(...data); // Merge the data from each category if it's an array
+          }
+
+          categoriesFetched += 1;
+          if (categoriesFetched === categories.length) {
+            setImages(allImages); // Only set images after all categories are fetched
+            setTotalImages(allImages.length); // Set total images for all categories
+          }
+        });
+      });
+    } else {
+      fetchImages(selectedCategory);
+    }
+  }, [selectedCategory]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
+    setCurrentBatch(12); // Reset the batch count when changing categories
     setLoadingImages(true);
     setTimeout(() => setLoadingImages(false), 500); // Simulate loading delay
   };
 
-  const filteredImages =
-    selectedCategory === "All"
-      ? images
-      : images.filter((image) => image.category === selectedCategory);
-
   const handleImageLoad = () => {
     setImagesLoaded(true); // Trigger image loaded state
   };
+
+  const handleImageError = (e) => {
+    e.target.src = "/placeholder-image.jpg"; // Placeholder image on error
+  };
+
+  const loadMore = () => {
+    setCurrentBatch((prevBatch) => prevBatch + 12); // Load next 12 images
+  };
+
+  const displayedImages = images.slice(0, currentBatch); // Display only the images up to the current batch
 
   return (
     <div
@@ -79,7 +105,7 @@ const ImageGrid = () => {
       }}
     >
       <Box>
-        <img src="/Email_Signatuer_Logo.png" width="100" alt="Logo" />
+        <img src="/Email_Signatuer_logo.png" width="100" alt="Logo" />
       </Box>
       <Typography
         variant="h4"
@@ -159,10 +185,10 @@ const ImageGrid = () => {
               <Skeleton variant="rectangular" width="100%" height={200} />
             </Paper>
           ))
-        ) : filteredImages.length > 0 ? (
-          filteredImages.map(({ id, imageUrl }) => (
+        ) : displayedImages.length > 0 ? (
+          displayedImages.map(({ id, url }, index) => (
             <Paper
-              key={id}
+              key={`${id}-${index}`} // Ensure unique key by combining id and index
               elevation={6}
               style={{
                 borderRadius: "16px",
@@ -179,7 +205,7 @@ const ImageGrid = () => {
                 style={{ width: "100%", height: "auto", overflow: "hidden" }}
               >
                 <img
-                  src={imageUrl}
+                  src={url} // Updated to use 'url' from the JSON
                   alt={`Image`}
                   style={{
                     width: "100%",
@@ -190,7 +216,7 @@ const ImageGrid = () => {
                     transition: "opacity 0.5s ease-in-out", // Smooth transition
                   }}
                   onLoad={handleImageLoad} // Set imagesLoaded to true once image is loaded
-                  onError={(e) => (e.target.src = "/placeholder-image.jpg")} // Placeholder image on error
+                  onError={handleImageError} // Placeholder image on error
                 />
               </div>
             </Paper>
@@ -205,6 +231,27 @@ const ImageGrid = () => {
           </Typography>
         )}
       </Masonry>
+
+      {/* Load More Button */}
+      {displayedImages.length < totalImages && (
+        <Chip
+          label="Load More"
+          onClick={loadMore}
+          sx={{
+            backgroundColor: "black",
+            color: "white",
+            borderRadius: "50px", // Chip-like rounded appearance
+            marginTop: "10px",
+            padding: "20px",
+            "&:hover": {
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid black", // Adds border to make it more chip-like on hover
+            },
+            cursor: "pointer", // Ensures the chip behaves like a clickable element
+          }}
+        />
+      )}
     </div>
   );
 };
