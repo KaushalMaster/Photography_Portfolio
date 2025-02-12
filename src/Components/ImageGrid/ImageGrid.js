@@ -5,12 +5,19 @@ import {
   Chip,
   Skeleton,
   Box,
-  Button,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import Masonry from "@mui/lab/Masonry"; // Import Masonry from Material-UI Lab
-import "@fontsource/roboto"; // You can use other font families
+import Masonry from "@mui/lab/Masonry";
+import "@fontsource/roboto";
+
+// Import JSON files statically
+import weddingData from "../../data/wedding.json";
+import preWeddingData from "../../data/pre-wedding.json";
+import eventsData from "../../data/events.json";
+import streetData from "../../data/street.json";
+import portraitsData from "../../data/potraits.json";
+import foodData from "../../data/food.json";
 
 const categories = [
   "Wedding",
@@ -25,76 +32,70 @@ const ImageGrid = () => {
   const [images, setImages] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
-  const [loadingImages, setLoadingImages] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(false); // Track if images are loaded
-  const [currentBatch, setCurrentBatch] = useState(12); // Track how many images are displayed
-  const [totalImages, setTotalImages] = useState(0); // Total number of images in the category
+  const [currentBatch, setCurrentBatch] = useState(12);
+  const [totalImages, setTotalImages] = useState(0);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  useEffect(() => {
-    const fetchImages = async (category) => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/data/${category}.json`); // Fetch the JSON based on the selected category
-        const data = await response.json();
+  // Function to load images based on category
+  const loadCategoryImages = (category) => {
+    setLoading(true);
 
-        if (Array.isArray(data)) {
-          setImages(data);
-          setTotalImages(data.length); // Store the total number of images
-        } else {
-          console.error("Fetched data is not an array:", data);
-        }
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (selectedCategory === "All") {
-      const allImages = [];
-      let categoriesFetched = 0;
-
-      categories.forEach((category) => {
-        fetchImages(category).then((data) => {
-          if (Array.isArray(data)) {
-            allImages.push(...data); // Merge the data from each category if it's an array
-          }
-
-          categoriesFetched += 1;
-          if (categoriesFetched === categories.length) {
-            setImages(allImages); // Only set images after all categories are fetched
-            setTotalImages(allImages.length); // Set total images for all categories
-          }
-        });
-      });
-    } else {
-      fetchImages(selectedCategory);
+    let data = [];
+    switch (category) {
+      case "Wedding":
+        data = weddingData;
+        break;
+      case "Pre-Wedding":
+        data = preWeddingData;
+        break;
+      case "Events":
+        data = eventsData;
+        break;
+      case "Street":
+        data = streetData;
+        break;
+      case "Portraits":
+        data = portraitsData;
+        break;
+      case "Food":
+        data = foodData;
+        break;
+      case "All":
+        data = [
+          ...weddingData,
+          ...preWeddingData,
+          ...eventsData,
+          ...streetData,
+          ...portraitsData,
+          ...foodData,
+        ];
+        break;
+      default:
+        data = [];
     }
+
+    setImages(data);
+    setTotalImages(data.length);
+    setLoading(false);
+  };
+
+  // Load images when a category is selected
+  useEffect(() => {
+    loadCategoryImages(selectedCategory);
   }, [selectedCategory]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
-    setCurrentBatch(12); // Reset the batch count when changing categories
-    setLoadingImages(true);
-    setTimeout(() => setLoadingImages(false), 500); // Simulate loading delay
-  };
-
-  const handleImageLoad = () => {
-    setImagesLoaded(true); // Trigger image loaded state
-  };
-
-  const handleImageError = (e) => {
-    e.target.src = "/placeholder-image.jpg"; // Placeholder image on error
+    setCurrentBatch(12); // Reset batch count when changing categories
   };
 
   const loadMore = () => {
-    setCurrentBatch((prevBatch) => prevBatch + 12); // Load next 12 images
+    setCurrentBatch((prevBatch) => prevBatch + 12);
   };
 
-  const displayedImages = images.slice(0, currentBatch); // Display only the images up to the current batch
+  const displayedImages = images.slice(0, currentBatch);
 
   return (
     <div
@@ -121,14 +122,14 @@ const ImageGrid = () => {
         Image Gallery
       </Typography>
 
-      {/* Horizontally Scrollable Chips Container */}
+      {/* Category Chips */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-start",
           marginBottom: "30px",
-          overflowX: "auto", // Allow horizontal scroll
-          padding: { xs: "0 10px", md: "0" }, // Responsive padding
+          overflowX: "auto",
+          padding: { xs: "0 10px", md: "0" },
         }}
       >
         <Chip
@@ -177,9 +178,8 @@ const ImageGrid = () => {
         ))}
       </Box>
 
-      {/* Masonry Layout for Images */}
       <Masonry columns={isMobile ? 2 : 4} spacing={2}>
-        {loading || loadingImages ? (
+        {loading ? (
           Array.from(new Array(6)).map((_, index) => (
             <Paper key={index} elevation={3} style={{ borderRadius: "10px" }}>
               <Skeleton variant="rectangular" width="100%" height={200} />
@@ -188,7 +188,7 @@ const ImageGrid = () => {
         ) : displayedImages.length > 0 ? (
           displayedImages.map(({ id, url }, index) => (
             <Paper
-              key={`${id}-${index}`} // Ensure unique key by combining id and index
+              key={`${id}-${index}`}
               elevation={6}
               style={{
                 borderRadius: "16px",
@@ -205,18 +205,14 @@ const ImageGrid = () => {
                 style={{ width: "100%", height: "auto", overflow: "hidden" }}
               >
                 <img
-                  src={url} // Updated to use 'url' from the JSON
+                  src={url}
                   alt={`Image`}
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "contain", // Changed to contain for better fitting
+                    objectFit: "contain",
                     borderRadius: "16px 16px 0 0",
-                    opacity: imagesLoaded ? 1 : 0, // Fade-in effect
-                    transition: "opacity 0.5s ease-in-out", // Smooth transition
                   }}
-                  onLoad={handleImageLoad} // Set imagesLoaded to true once image is loaded
-                  onError={handleImageError} // Placeholder image on error
                 />
               </div>
             </Paper>
@@ -232,7 +228,6 @@ const ImageGrid = () => {
         )}
       </Masonry>
 
-      {/* Load More Button */}
       {displayedImages.length < totalImages && (
         <Chip
           label="Load More"
@@ -240,15 +235,15 @@ const ImageGrid = () => {
           sx={{
             backgroundColor: "black",
             color: "white",
-            borderRadius: "50px", // Chip-like rounded appearance
+            borderRadius: "50px",
             marginTop: "10px",
             padding: "20px",
             "&:hover": {
               backgroundColor: "white",
               color: "black",
-              border: "1px solid black", // Adds border to make it more chip-like on hover
+              border: "1px solid black",
             },
-            cursor: "pointer", // Ensures the chip behaves like a clickable element
+            cursor: "pointer",
           }}
         />
       )}
