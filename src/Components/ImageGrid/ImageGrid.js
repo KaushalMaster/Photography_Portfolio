@@ -22,9 +22,10 @@ import foodData from "../../data/food.json";
 const categories = [
   "Wedding",
   "Pre-Wedding",
+  "Portraits",
+  "Baby",
   "Events",
   "Street",
-  "Portraits",
   "Food",
 ];
 
@@ -213,6 +214,9 @@ const ImageGrid = () => {
                     objectFit: "contain",
                     borderRadius: "16px 16px 0 0",
                   }}
+                  // Prevent right-click (context menu) and dragging
+                  onContextMenu={(e) => e.preventDefault()} // Disable right-click
+                  onDragStart={(e) => e.preventDefault()} // Prevent drag
                 />
               </div>
             </Paper>
