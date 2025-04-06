@@ -18,6 +18,7 @@ import eventsData from "../../data/events.json";
 import streetData from "../../data/street.json";
 import portraitsData from "../../data/potraits.json";
 import foodData from "../../data/food.json";
+import babyData from "../../data/baby.json";
 
 const categories = [
   "Wedding",
@@ -63,6 +64,9 @@ const ImageGrid = () => {
       case "Food":
         data = foodData;
         break;
+      case "Baby":
+        data = babyData;
+        break;
       case "All":
         data = [
           ...weddingData,
@@ -71,6 +75,7 @@ const ImageGrid = () => {
           ...streetData,
           ...portraitsData,
           ...foodData,
+          ...babyData,
         ];
         break;
       default:
