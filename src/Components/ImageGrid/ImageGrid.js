@@ -14,6 +14,7 @@ import "@fontsource/roboto";
 // Import JSON files statically
 import weddingData from "../../data/wedding.json";
 import preWeddingData from "../../data/pre-wedding.json";
+import engagementCeremonyData from "../../data/engagement-ceremony.json";
 import eventsData from "../../data/events.json";
 import streetData from "../../data/street.json";
 import portraitsData from "../../data/potraits.json";
@@ -23,6 +24,7 @@ import babyData from "../../data/baby.json";
 const categories = [
   "Wedding",
   "Pre-Wedding",
+  "Engagement Ceremony",
   "Portraits",
   "Baby",
   "Events",
@@ -52,6 +54,9 @@ const ImageGrid = () => {
       case "Pre-Wedding":
         data = preWeddingData;
         break;
+      case "Engagement Ceremony":
+        data = engagementCeremonyData;
+        break;
       case "Events":
         data = eventsData;
         break;
@@ -71,6 +76,7 @@ const ImageGrid = () => {
         data = [
           ...weddingData,
           ...preWeddingData,
+          ...engagementCeremonyData,
           ...eventsData,
           ...streetData,
           ...portraitsData,
