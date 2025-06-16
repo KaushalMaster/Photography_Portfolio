@@ -1,5 +1,29 @@
 [
   {
+    "id": "DSC01753",
+    "name": "Wedding",
+    "category": "wedding",
+    "url": "./Wedding/DSC01753.png"
+  },
+  {
+    "id": "DSC01757",
+    "name": "Wedding",
+    "category": "wedding",
+    "url": "./Wedding/DSC01757.png"
+  },
+  {
+    "id": "DSC01775",
+    "name": "Wedding",
+    "category": "wedding",
+    "url": "./Wedding/DSC01775.png"
+  },
+  {
+    "id": "DSC01888",
+    "name": "Wedding",
+    "category": "wedding",
+    "url": "./Wedding/DSC01888.png"
+  },
+  {
     "id": "DSC_0375",
     "name": "Wedding",
     "category": "wedding",
@@ -571,7 +595,7 @@
   },
   {
     "id": "DSC05671_BW",
-    "name": "Wedding",  
+    "name": "Wedding",
     "category": "wedding",
     "url": "./Wedding/DSC05671_BW.jpeg"
   },
