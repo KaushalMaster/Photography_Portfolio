@@ -22,12 +22,12 @@ import foodData from "../../data/food.json";
 import babyData from "../../data/baby.json";
 
 const categories = [
+  "Events",
   "Wedding",
   "Pre-Wedding",
   "Engagement Ceremony",
   "Portraits",
   "Baby",
-  "Events",
   "Street",
   "Food",
 ];
