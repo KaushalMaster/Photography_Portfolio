@@ -16,15 +16,19 @@ import weddingData from "../../data/wedding.json";
 import preWeddingData from "../../data/pre-wedding.json";
 import engagementCeremonyData from "../../data/engagement-ceremony.json";
 import eventsData from "../../data/events.json";
+import concertsData from "../../data/concerts.json";
 import streetData from "../../data/street.json";
 import portraitsData from "../../data/potraits.json";
+import productsData from "../../data/products.json";
 import foodData from "../../data/food.json";
 import babyData from "../../data/baby.json";
 
 const categories = [
   "Events",
+  "Concerts",
   "Wedding",
   "Pre-Wedding",
+  "Products",
   "Engagement Ceremony",
   "Portraits",
   "Baby",
@@ -60,11 +64,17 @@ const ImageGrid = () => {
       case "Events":
         data = eventsData;
         break;
+      case "Concerts":
+        data = concertsData;
+        break;
       case "Street":
         data = streetData;
         break;
       case "Portraits":
         data = portraitsData;
+        break;
+      case "Products":
+        data = productsData;
         break;
       case "Food":
         data = foodData;
@@ -78,8 +88,10 @@ const ImageGrid = () => {
           ...preWeddingData,
           ...engagementCeremonyData,
           ...eventsData,
+          ...concertsData,
           ...streetData,
           ...portraitsData,
+          ...productsData,
           ...foodData,
           ...babyData,
         ];
