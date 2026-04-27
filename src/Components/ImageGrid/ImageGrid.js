@@ -11,7 +11,7 @@ import {
 import Masonry from "@mui/lab/Masonry";
 import "@fontsource/roboto";
 
-// Import JSON files statically
+// JSON imports
 import weddingData from "../../data/wedding.json";
 import preWeddingData from "../../data/pre-wedding.json";
 import engagementCeremonyData from "../../data/engagement-ceremony.json";
@@ -23,257 +23,250 @@ import productsData from "../../data/products.json";
 import foodData from "../../data/food.json";
 import babyData from "../../data/baby.json";
 
-const categories = [
-  "Events",
-  "Concerts",
-  "Wedding",
-  "Pre-Wedding",
-  "Products",
-  "Engagement Ceremony",
-  "Portraits",
-  "Baby",
-  "Street",
-  "Food",
-];
+// Category Map
+const categoryData = {
+  Events: eventsData,
+  Concerts: concertsData,
+  Wedding: weddingData,
+  "Pre-Wedding": preWeddingData,
+  "Engagement Ceremony": engagementCeremonyData,
+  Portraits: portraitsData,
+  Products: productsData,
+  Street: streetData,
+  Food: foodData,
+  Baby: babyData,
+};
+
+const categories = Object.keys(categoryData);
+
+// 🔥 Blur Image Component
+const BlurImage = ({ src, alt }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <img
+        src={src}
+        alt={alt}
+        onLoad={() => setLoaded(true)}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          filter: loaded ? "blur(0px)" : "blur(20px)",
+          transform: loaded ? "scale(1)" : "scale(1.1)",
+          transition: "all 0.6s ease",
+        }}
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+      />
+    </div>
+  );
+};
 
 const ImageGrid = () => {
-  const [images, setImages] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentBatch, setCurrentBatch] = useState(12);
-  const [totalImages, setTotalImages] = useState(0);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Function to load images based on category
-  const loadCategoryImages = (category) => {
+  useEffect(() => {
     setLoading(true);
 
-    let data = [];
-    switch (category) {
-      case "Wedding":
-        data = weddingData;
-        break;
-      case "Pre-Wedding":
-        data = preWeddingData;
-        break;
-      case "Engagement Ceremony":
-        data = engagementCeremonyData;
-        break;
-      case "Events":
-        data = eventsData;
-        break;
-      case "Concerts":
-        data = concertsData;
-        break;
-      case "Street":
-        data = streetData;
-        break;
-      case "Portraits":
-        data = portraitsData;
-        break;
-      case "Products":
-        data = productsData;
-        break;
-      case "Food":
-        data = foodData;
-        break;
-      case "Baby":
-        data = babyData;
-        break;
-      case "All":
-        data = [
-          ...weddingData,
-          ...preWeddingData,
-          ...engagementCeremonyData,
-          ...eventsData,
-          ...concertsData,
-          ...streetData,
-          ...portraitsData,
-          ...productsData,
-          ...foodData,
-          ...babyData,
-        ];
-        break;
-      default:
-        data = [];
+    if (selectedCategory === "All") {
+      setImages([]);
+    } else {
+      setImages(categoryData[selectedCategory] || []);
     }
 
-    setImages(data);
-    setTotalImages(data.length);
     setLoading(false);
-  };
-
-  // Load images when a category is selected
-  useEffect(() => {
-    loadCategoryImages(selectedCategory);
+    setCurrentBatch(12);
   }, [selectedCategory]);
-
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-    setCurrentBatch(12); // Reset batch count when changing categories
-  };
-
-  const loadMore = () => {
-    setCurrentBatch((prevBatch) => prevBatch + 12);
-  };
 
   const displayedImages = images.slice(0, currentBatch);
 
   return (
     <div
       style={{
-        padding: "20px",
         backgroundColor: "#121212",
         minHeight: "100vh",
       }}
     >
-      <Box>
-        <img src="/Email_Signatuer_Logo.png" width="100" alt="Logo" />
-      </Box>
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        style={{
-          color: "#ffffff",
-          fontFamily: "Roboto, sans-serif",
-          fontWeight: 700,
-          marginBottom: "30px",
-        }}
-      >
-        Image Gallery
-      </Typography>
-
-      {/* Category Chips */}
+      {/* 🔥 Sticky Logo */}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-start",
-          marginBottom: "30px",
-          overflowX: "auto",
-          padding: { xs: "0 10px", md: "0" },
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-evenly",
+          top: 0,
+          zIndex: 1000,
+          backgroundColor: "#121212",
+          px: 2,
+          pt: 2,
+          pb: 1,
         }}
       >
-        <Chip
-          label="All"
-          onClick={() => handleCategoryClick("All")}
-          sx={{
-            margin: "0 10px",
-            cursor: "pointer",
-            color: selectedCategory === "All" ? "black" : "white",
-            bgcolor: selectedCategory === "All" ? "white" : "transparent",
-            border: selectedCategory === "All" ? "none" : "1px solid white",
-            fontFamily: "Roboto, sans-serif",
-            fontWeight: 600,
-            transition: "background-color 0.3s",
-            "&:hover": {
-              backgroundColor:
-                selectedCategory === "All"
-                  ? "#e0e0e0"
-                  : "rgba(255, 255, 255, 0.1)",
-            },
-          }}
-        />
-        {categories.map((category) => (
-          <Chip
-            key={category}
-            label={category}
-            onClick={() => handleCategoryClick(category)}
-            sx={{
-              margin: "0 10px",
-              cursor: "pointer",
-              color: selectedCategory === category ? "black" : "white",
-              bgcolor: selectedCategory === category ? "white" : "transparent",
-              border:
-                selectedCategory === category ? "none" : "1px solid white",
-              fontFamily: "Roboto, sans-serif",
-              fontWeight: 500,
-              transition: "background-color 0.3s",
-              "&:hover": {
-                backgroundColor:
-                  selectedCategory === category
-                    ? "#e0e0e0"
-                    : "rgba(255, 255, 255, 0.1)",
-              },
-            }}
-          />
-        ))}
+        <img src="/Logo_white.png" width="15%" alt="Logo" />
       </Box>
 
-      <Masonry columns={isMobile ? 2 : 4} spacing={2}>
-        {loading ? (
-          Array.from(new Array(6)).map((_, index) => (
-            <Paper key={index} elevation={3} style={{ borderRadius: "10px" }}>
-              <Skeleton variant="rectangular" width="100%" height={200} />
-            </Paper>
-          ))
-        ) : displayedImages.length > 0 ? (
-          displayedImages.map(({ id, url }, index) => (
-            <Paper
-              key={`${id}-${index}`}
-              elevation={6}
-              style={{
-                borderRadius: "16px",
-                overflow: "hidden",
-                backgroundColor: "#000",
-                transition: "transform 0.3s, box-shadow 0.3s",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.3)",
-                },
-              }}
-            >
-              <div
-                style={{ width: "100%", height: "auto", overflow: "hidden" }}
-              >
-                <img
-                  src={url}
-                  alt={""}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    borderRadius: "16px 16px 0 0",
-                  }}
-                  // Prevent right-click (context menu) and dragging
-                  onContextMenu={(e) => e.preventDefault()} // Disable right-click
-                  onDragStart={(e) => e.preventDefault()} // Prevent drag
-                />
-              </div>
-            </Paper>
-          ))
-        ) : (
-          <Typography
-            variant="h6"
-            align="center"
-            style={{ color: "#ffffff", gridColumn: "span 4" }}
-          >
-            No images available for this category.
-          </Typography>
-        )}
-      </Masonry>
+      <Box sx={{ padding: "20px" }}>
+        {/* Title */}
+        {/* <Typography
+          variant="h4"
+          align="center"
+          sx={{ color: "#fff", mb: 3, fontWeight: 700 }}
+        >
+          {selectedCategory === "All" ? "Portfolio" : selectedCategory}
+        </Typography> */}
 
-      {displayedImages.length < totalImages && (
-        <Chip
-          label="Load More"
-          onClick={loadMore}
-          sx={{
-            backgroundColor: "black",
-            color: "white",
-            borderRadius: "50px",
-            marginTop: "10px",
-            padding: "20px",
-            "&:hover": {
-              backgroundColor: "white",
-              color: "black",
-              border: "1px solid black",
-            },
-            cursor: "pointer",
-          }}
-        />
-      )}
+        {/* Category Chips */}
+        <Box sx={{ display: "flex", overflowX: "auto", mb: 3 }}>
+          <Chip
+            label="All"
+            onClick={() => setSelectedCategory("All")}
+            sx={{
+              mr: 1,
+              bgcolor: selectedCategory === "All" ? "#fff" : "transparent",
+              color: selectedCategory === "All" ? "#000" : "#fff",
+            }}
+          />
+          {categories.map((cat) => (
+            <Chip
+              key={cat}
+              label={cat}
+              onClick={() => setSelectedCategory(cat)}
+              sx={{
+                mr: 1,
+                bgcolor: selectedCategory === cat ? "#fff" : "transparent",
+                color: selectedCategory === cat ? "#000" : "#fff",
+                border: "1px solid white",
+              }}
+            />
+          ))}
+        </Box>
+
+        {/* 🔥 MAIN VIEW SWITCH */}
+        {selectedCategory === "All" ? (
+          // 🔹 CATEGORY CARDS
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr",
+                md: "1fr 1fr 1fr",
+              },
+              gap: 3,
+            }}
+          >
+            {categories.map((category) => {
+              const cover = categoryData[category]?.[0]?.url;
+
+              return (
+                <Paper
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  sx={{
+                    height: 300,
+                    borderRadius: "20px",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    position: "relative",
+                    transition: "0.4s",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <BlurImage src={cover} alt={category} />
+
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: 0,
+                      width: "100%",
+                      p: 2,
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
+                    }}
+                  >
+                    <Typography sx={{ color: "#fff", fontWeight: 600 }}>
+                      {category}
+                    </Typography>
+                  </Box>
+                </Paper>
+              );
+            })}
+          </Box>
+        ) : (
+          // 🔹 IMAGE GRID
+          <Box
+            sx={{
+              animation: "fadeIn 0.5s ease",
+              "@keyframes fadeIn": {
+                from: { opacity: 0 },
+                to: { opacity: 1 },
+              },
+            }}
+          >
+            <Masonry columns={isMobile ? 2 : 4} spacing={2}>
+              {loading ? (
+                Array.from(new Array(6)).map((_, index) => (
+                  <Paper key={index}>
+                    <Skeleton variant="rectangular" height={200} />
+                  </Paper>
+                ))
+              ) : displayedImages.length > 0 ? (
+                displayedImages.map(({ id, url }, index) => (
+                  <Paper
+                    key={`${id}-${index}`}
+                    sx={{
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <BlurImage src={url} alt="" />
+                  </Paper>
+                ))
+              ) : (
+                <Typography sx={{ color: "#fff" }}>
+                  No images available
+                </Typography>
+              )}
+            </Masonry>
+
+            {/* Load More */}
+            {displayedImages.length < images.length && (
+              <Box textAlign="center" mt={3}>
+                <Typography
+                  onClick={() => setCurrentBatch((prev) => prev + 12)}
+                  sx={{
+                    color: "#fff",
+                    cursor: "pointer",
+                    border: "1px solid white",
+                    display: "inline-block",
+                    px: 3,
+                    py: 1,
+                    borderRadius: "20px",
+                  }}
+                >
+                  Load More
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        )}
+      </Box>
     </div>
   );
 };
