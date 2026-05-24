@@ -20,10 +20,17 @@ import concertsData from "../../data/concerts.json";
 import streetData from "../../data/street.json";
 import portraitsData from "../../data/potraits.json";
 import productsData from "../../data/products.json";
+import jewelleryData from "../../data/jewellery.json"; // NEW
 import foodData from "../../data/food.json";
 import babyData from "../../data/baby.json";
 
-// Category Map
+// 🔥 Product Sub Categories
+const productCategories = {
+  Jewellery: jewelleryData,
+  Products: productsData,
+};
+
+// Main Categories
 const categoryData = {
   Events: eventsData,
   Concerts: concertsData,
@@ -31,10 +38,10 @@ const categoryData = {
   "Pre-Wedding": preWeddingData,
   "Engagement Ceremony": engagementCeremonyData,
   Portraits: portraitsData,
-  Products: productsData,
   Street: streetData,
   Food: foodData,
   Baby: babyData,
+  Products: productCategories, // 🔥 Nested Categories
 };
 
 const categories = Object.keys(categoryData);
@@ -72,6 +79,10 @@ const BlurImage = ({ src, alt }) => {
 
 const ImageGrid = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // 🔥 For Product Sub Categories
+  const [selectedProductCategory, setSelectedProductCategory] = useState(null);
+
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentBatch, setCurrentBatch] = useState(12);
@@ -82,15 +93,32 @@ const ImageGrid = () => {
   useEffect(() => {
     setLoading(true);
 
+    // 🔥 ALL PAGE
     if (selectedCategory === "All") {
       setImages([]);
-    } else {
+    }
+
+    // 🔥 PRODUCTS PAGE
+    else if (selectedCategory === "Products") {
+      // If sub category selected
+      if (selectedProductCategory) {
+        setImages(productCategories[selectedProductCategory] || []);
+      } else {
+        setImages([]);
+      }
+    }
+
+    // 🔥 NORMAL CATEGORY
+    else {
       setImages(categoryData[selectedCategory] || []);
     }
 
-    setLoading(false);
     setCurrentBatch(12);
-  }, [selectedCategory]);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 300);
+  }, [selectedCategory, selectedProductCategory]);
 
   const displayedImages = images.slice(0, currentBatch);
 
@@ -120,31 +148,29 @@ const ImageGrid = () => {
       </Box>
 
       <Box sx={{ padding: "20px" }}>
-        {/* Title */}
-        {/* <Typography
-          variant="h4"
-          align="center"
-          sx={{ color: "#fff", mb: 3, fontWeight: 700 }}
-        >
-          {selectedCategory === "All" ? "Portfolio" : selectedCategory}
-        </Typography> */}
-
-        {/* Category Chips */}
+        {/* 🔥 CATEGORY CHIPS */}
         <Box sx={{ display: "flex", overflowX: "auto", mb: 3 }}>
           <Chip
             label="All"
-            onClick={() => setSelectedCategory("All")}
+            onClick={() => {
+              setSelectedCategory("All");
+              setSelectedProductCategory(null);
+            }}
             sx={{
               mr: 1,
               bgcolor: selectedCategory === "All" ? "#fff" : "transparent",
               color: selectedCategory === "All" ? "#000" : "#fff",
             }}
           />
+
           {categories.map((cat) => (
             <Chip
               key={cat}
               label={cat}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => {
+                setSelectedCategory(cat);
+                setSelectedProductCategory(null);
+              }}
               sx={{
                 mr: 1,
                 bgcolor: selectedCategory === cat ? "#fff" : "transparent",
@@ -155,7 +181,7 @@ const ImageGrid = () => {
           ))}
         </Box>
 
-        {/* 🔥 MAIN VIEW SWITCH */}
+        {/* 🔥 MAIN VIEW */}
         {selectedCategory === "All" ? (
           // 🔹 CATEGORY CARDS
           <Box
@@ -170,12 +196,22 @@ const ImageGrid = () => {
             }}
           >
             {categories.map((category) => {
-              const cover = categoryData[category]?.[0]?.url;
+              let cover;
+
+              // 🔥 Products Cover
+              if (category === "Products") {
+                cover = productCategories.Products?.[0]?.url;
+              } else {
+                cover = categoryData[category]?.[0]?.url;
+              }
 
               return (
                 <Paper
                   key={category}
-                  onClick={() => setSelectedCategory(category)}
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    setSelectedProductCategory(null);
+                  }}
                   sx={{
                     height: 300,
                     borderRadius: "20px",
@@ -200,7 +236,12 @@ const ImageGrid = () => {
                         "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
                     }}
                   >
-                    <Typography sx={{ color: "#fff", fontWeight: 600 }}>
+                    <Typography
+                      sx={{
+                        color: "#fff",
+                        fontWeight: 600,
+                      }}
+                    >
                       {category}
                     </Typography>
                   </Box>
@@ -208,8 +249,65 @@ const ImageGrid = () => {
               );
             })}
           </Box>
+        ) : selectedCategory === "Products" && !selectedProductCategory ? (
+          // 🔥 PRODUCT SUB CATEGORY CARDS
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr",
+                md: "1fr 1fr",
+              },
+              gap: 3,
+            }}
+          >
+            {Object.keys(productCategories).map((productType) => {
+              const cover = productCategories[productType]?.[0]?.url;
+
+              return (
+                <Paper
+                  key={productType}
+                  onClick={() => setSelectedProductCategory(productType)}
+                  sx={{
+                    height: 300,
+                    borderRadius: "20px",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    position: "relative",
+                    transition: "0.4s",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <BlurImage src={cover} alt={productType} />
+
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: 0,
+                      width: "100%",
+                      p: 2,
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: "#fff",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {productType}
+                    </Typography>
+                  </Box>
+                </Paper>
+              );
+            })}
+          </Box>
         ) : (
-          // 🔹 IMAGE GRID
+          // 🔥 IMAGE GRID
           <Box
             sx={{
               animation: "fadeIn 0.5s ease",
@@ -245,7 +343,7 @@ const ImageGrid = () => {
               )}
             </Masonry>
 
-            {/* Load More */}
+            {/* 🔥 LOAD MORE */}
             {displayedImages.length < images.length && (
               <Box textAlign="center" mt={3}>
                 <Typography
