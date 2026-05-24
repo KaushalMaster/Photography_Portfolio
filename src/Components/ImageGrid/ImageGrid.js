@@ -11,8 +11,10 @@ import {
 import Masonry from "@mui/lab/Masonry";
 import "@fontsource/roboto";
 
-// 🔥 Main Category Data
-import weddingData from "../../data/wedding.json";
+// ======================================================
+// 🔥 NORMAL CATEGORY DATA
+// ======================================================
+
 import engagementCeremonyData from "../../data/engagement-ceremony.json";
 import eventsData from "../../data/events.json";
 import concertsData from "../../data/concerts.json";
@@ -21,26 +23,57 @@ import portraitsData from "../../data/potraits.json";
 import foodData from "../../data/food.json";
 import babyData from "../../data/baby.json";
 
-// 🔥 Product Subcategories
+// ======================================================
+// 🔥 PRODUCT DATA
+// ======================================================
+
 import productsData from "../../data/products.json";
 import jewelleryData from "../../data/jewellery.json";
 
-// 🔥 Pre Wedding Subcategories
-import abhishekHemangiData from "../../data/Prewedding/Abhishek-and-Hemangi.json";
-import utkarshPriyanshiData from "../../data/Prewedding/Utkarsh-and-Priyanshi.json";
-import apurvDhanviData from "../../data/Prewedding/Apurv-and-Dhanvi.json";
+// ======================================================
+// 🔥 PRE-WEDDING DATA
+// ======================================================
+
+import abhishek_HemangiData from "../../data/Prewedding/Abhishek-and-Hemangi.json";
+import apurv_DhanviData from "../../data/Prewedding/Apurv-and-Dhanvi.json";
+import utkarsh_PriyanshiData from "../../data/Prewedding/Utkarsh-and-Priyanshi.json";
 
 // ======================================================
-// 🔥 PRE-WEDDING COUPLES
+// 🔥 WEDDING DATA
+// ======================================================
+
+import abhishekHemangiData from "../../data/Wedding/Abhishek-and-Hemangi.json";
+
+import dhruvilPrachiData from "../../data/Wedding/Dhruvil-and-Prachi.json";
+
+import manthanBhavyaData from "../../data/Wedding/Manthan-and-Bhavya.json";
+
+import utkarshPriyanshiData from "../../data/Wedding/Utkarsh-and-Priyanshi.json";
+
+// ======================================================
+// 🔥 PRE-WEDDING CATEGORIES
 // ======================================================
 
 const preWeddingCategories = {
-  "Abhishek & Hemangi": abhishekHemangiData,
-  "Utkarsh & Priyanshi": utkarshPriyanshiData,
-  "Apurv & Dhanvi": apurvDhanviData,
+  "Apurv & Dhanvi": apurv_DhanviData,
+  "Abhishek & Hemangi": abhishek_HemangiData,
+  "Utkarsh & Priyanshi": utkarsh_PriyanshiData,
 };
 
-console.log(preWeddingCategories["Abhishek & Hemangi"]?.[0]?.url);
+// ======================================================
+// 🔥 WEDDING CATEGORIES
+// ======================================================
+
+const weddingCategories = {
+  "Abhishek And Hemangi": abhishekHemangiData,
+
+  "Dhruvil And Prachi": dhruvilPrachiData,
+
+  "Manthan And Bhavya": manthanBhavyaData,
+
+  "Utkarsh And Priyanshi": utkarshPriyanshiData,
+};
+
 // ======================================================
 // 🔥 PRODUCT CATEGORIES
 // ======================================================
@@ -56,24 +89,30 @@ const productCategories = {
 
 const categoryData = {
   Events: eventsData,
-  Concerts: concertsData,
-  Wedding: weddingData,
 
-  // Nested
+  Concerts: concertsData,
+
+  Wedding: weddingCategories,
+
   "Pre-Wedding": preWeddingCategories,
+
   Products: productCategories,
 
   "Engagement Ceremony": engagementCeremonyData,
+
   Portraits: portraitsData,
+
   Street: streetData,
+
   Food: foodData,
+
   Baby: babyData,
 };
 
 const categories = Object.keys(categoryData);
 
 // ======================================================
-// 🔥 BLUR IMAGE
+// 🔥 BLUR IMAGE COMPONENT
 // ======================================================
 
 const BlurImage = ({ src, alt }) => {
@@ -95,8 +134,11 @@ const BlurImage = ({ src, alt }) => {
           width: "100%",
           height: "100%",
           objectFit: "cover",
+
           filter: loaded ? "blur(0px)" : "blur(20px)",
+
           transform: loaded ? "scale(1)" : "scale(1.1)",
+
           transition: "all 0.6s ease",
         }}
         onContextMenu={(e) => e.preventDefault()}
@@ -111,22 +153,32 @@ const BlurImage = ({ src, alt }) => {
 // ======================================================
 
 const ImageGrid = () => {
+  // ======================================================
+  // 🔥 CATEGORY STATES
+  // ======================================================
+
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // 🔥 Nested Category States
   const [selectedProductCategory, setSelectedProductCategory] = useState(null);
 
   const [selectedPreWeddingCategory, setSelectedPreWeddingCategory] =
     useState(null);
 
-  // 🔥 Images
+  const [selectedWeddingCategory, setSelectedWeddingCategory] = useState(null);
+
+  // ======================================================
+  // 🔥 IMAGE STATES
+  // ======================================================
+
   const [images, setImages] = useState([]);
 
-  // 🔥 Loading
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Pagination
   const [currentBatch, setCurrentBatch] = useState(12);
+
+  // ======================================================
+  // 🔥 RESPONSIVE
+  // ======================================================
 
   const theme = useTheme();
 
@@ -139,7 +191,10 @@ const ImageGrid = () => {
   useEffect(() => {
     setLoading(true);
 
-    // 🔥 ALL PAGE
+    // ======================================================
+    // 🔥 ALL
+    // ======================================================
+
     if (selectedCategory === "All") {
       setImages([]);
     }
@@ -167,6 +222,17 @@ const ImageGrid = () => {
     }
 
     // ======================================================
+    // 🔥 WEDDING
+    // ======================================================
+    else if (selectedCategory === "Wedding") {
+      if (selectedWeddingCategory) {
+        setImages(weddingCategories[selectedWeddingCategory] || []);
+      } else {
+        setImages([]);
+      }
+    }
+
+    // ======================================================
     // 🔥 NORMAL CATEGORY
     // ======================================================
     else {
@@ -178,7 +244,15 @@ const ImageGrid = () => {
     setTimeout(() => {
       setLoading(false);
     }, 300);
-  }, [selectedCategory, selectedProductCategory, selectedPreWeddingCategory]);
+  }, [
+    selectedCategory,
+
+    selectedProductCategory,
+
+    selectedPreWeddingCategory,
+
+    selectedWeddingCategory,
+  ]);
 
   const displayedImages = images.slice(0, currentBatch);
 
@@ -200,10 +274,15 @@ const ImageGrid = () => {
       <Box
         sx={{
           display: "flex",
+
           justifyContent: "center",
+
           backgroundColor: "#121212",
+
           px: 2,
+
           pt: 2,
+
           pb: 1,
         }}
       >
@@ -218,7 +297,9 @@ const ImageGrid = () => {
         <Box
           sx={{
             display: "flex",
+
             overflowX: "auto",
+
             mb: 3,
           }}
         >
@@ -230,10 +311,14 @@ const ImageGrid = () => {
               setSelectedProductCategory(null);
 
               setSelectedPreWeddingCategory(null);
+
+              setSelectedWeddingCategory(null);
             }}
             sx={{
               mr: 1,
+
               bgcolor: selectedCategory === "All" ? "#fff" : "transparent",
+
               color: selectedCategory === "All" ? "#000" : "#fff",
             }}
           />
@@ -248,9 +333,12 @@ const ImageGrid = () => {
                 setSelectedProductCategory(null);
 
                 setSelectedPreWeddingCategory(null);
+
+                setSelectedWeddingCategory(null);
               }}
               sx={{
                 mr: 1,
+
                 bgcolor: selectedCategory === cat ? "#fff" : "transparent",
 
                 color: selectedCategory === cat ? "#000" : "#fff",
@@ -272,7 +360,9 @@ const ImageGrid = () => {
 
               gridTemplateColumns: {
                 xs: "1fr",
+
                 sm: "1fr 1fr",
+
                 md: "1fr 1fr 1fr",
               },
 
@@ -282,17 +372,31 @@ const ImageGrid = () => {
             {categories.map((category) => {
               let cover;
 
-              // 🔥 Products Cover
+              // ======================================================
+              // 🔥 PRODUCTS COVER
+              // ======================================================
+
               if (category === "Products") {
                 cover = productCategories.Products?.[0]?.url;
               }
 
-              // 🔥 PreWedding Cover
+              // ======================================================
+              // 🔥 PRE-WEDDING COVER
+              // ======================================================
               else if (category === "Pre-Wedding") {
-                cover = preWeddingCategories["Abhishek & Hemangi"]?.[0]?.url;
+                cover = preWeddingCategories["Apurv & Dhanvi"]?.[0]?.url;
               }
 
-              // 🔥 Normal Cover
+              // ======================================================
+              // 🔥 WEDDING COVER
+              // ======================================================
+              else if (category === "Wedding") {
+                cover = weddingCategories["Abhishek And Hemangi"]?.[0]?.url;
+              }
+
+              // ======================================================
+              // 🔥 NORMAL COVER
+              // ======================================================
               else {
                 cover = categoryData[category]?.[0]?.url;
               }
@@ -306,6 +410,8 @@ const ImageGrid = () => {
                     setSelectedProductCategory(null);
 
                     setSelectedPreWeddingCategory(null);
+
+                    setSelectedWeddingCategory(null);
                   }}
                   sx={{
                     height: 300,
@@ -366,7 +472,9 @@ const ImageGrid = () => {
 
               gridTemplateColumns: {
                 xs: "1fr",
+
                 sm: "1fr 1fr",
+
                 md: "1fr 1fr",
               },
 
@@ -431,7 +539,7 @@ const ImageGrid = () => {
         ) : selectedCategory === "Pre-Wedding" &&
           !selectedPreWeddingCategory ? (
           // ======================================================
-          // 🔥 PRE-WEDDING COUPLE CARDS
+          // 🔥 PRE-WEDDING COUPLES
           // ======================================================
 
           <Box
@@ -440,7 +548,9 @@ const ImageGrid = () => {
 
               gridTemplateColumns: {
                 xs: "1fr",
+
                 sm: "1fr 1fr",
+
                 md: "1fr 1fr",
               },
 
@@ -454,6 +564,81 @@ const ImageGrid = () => {
                 <Paper
                   key={couple}
                   onClick={() => setSelectedPreWeddingCategory(couple)}
+                  sx={{
+                    height: 300,
+
+                    borderRadius: "20px",
+
+                    overflow: "hidden",
+
+                    cursor: "pointer",
+
+                    position: "relative",
+
+                    transition: "0.4s",
+
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <BlurImage src={cover} alt={couple} />
+
+                  <Box
+                    sx={{
+                      position: "absolute",
+
+                      bottom: 0,
+
+                      width: "100%",
+
+                      p: 2,
+
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: "#fff",
+
+                        fontWeight: 600,
+                      }}
+                    >
+                      {couple}
+                    </Typography>
+                  </Box>
+                </Paper>
+              );
+            })}
+          </Box>
+        ) : selectedCategory === "Wedding" && !selectedWeddingCategory ? (
+          // ======================================================
+          // 🔥 WEDDING COUPLES
+          // ======================================================
+
+          <Box
+            sx={{
+              display: "grid",
+
+              gridTemplateColumns: {
+                xs: "1fr",
+
+                sm: "1fr 1fr",
+
+                md: "1fr 1fr",
+              },
+
+              gap: 3,
+            }}
+          >
+            {Object.keys(weddingCategories).map((couple) => {
+              const cover = weddingCategories[couple]?.[0]?.url;
+
+              return (
+                <Paper
+                  key={couple}
+                  onClick={() => setSelectedWeddingCategory(couple)}
                   sx={{
                     height: 300,
 
