@@ -34,9 +34,9 @@ import jewelleryData from "../../data/jewellery.json";
 // 🔥 PRE-WEDDING DATA
 // ======================================================
 
-import apurv_DhanviData from "../../data/Prewedding/Apurv-and-Dhanvi.json";
-import abhishek_HemangiData from "../../data/Prewedding/Abhishek-and-Hemangi.json";
-import utkarsh_PriyanshiData from "../../data/Prewedding/Utkarsh-and-Priyanshi.json";
+import apurvDhanviData from "../../data/Prewedding/Apurv-and-Dhanvi.json";
+import abhishekHemangiDataPre from "../../data/Prewedding/Abhishek-and-Hemangi.json";
+import utkarshPriyanshiDataPre from "../../data/Prewedding/Utkarsh-and-Priyanshi.json";
 
 // ======================================================
 // 🔥 WEDDING DATA
@@ -55,24 +55,25 @@ import utkarshPriyanshiData from "../../data/Wedding/Utkarsh-and-Priyanshi.json"
 // ======================================================
 
 const preWeddingCategories = {
-  "Apurv_Dhanvi": apurv_DhanviData,
-  "Abhishek_Hemangi": abhishek_HemangiData,
-  "Utkarsh_Priyanshi": utkarsh_PriyanshiData,
-};
+  apurvDhanvi: apurvDhanviData,
 
+  abhishekHemangi: abhishekHemangiDataPre,
+
+  utkarshPriyanshi: utkarshPriyanshiDataPre,
+};
 
 // ======================================================
 // 🔥 WEDDING CATEGORIES
 // ======================================================
 
 const weddingCategories = {
-  "Abhishek__Hemangi": abhishekHemangiData,
-  
-  "Dhruvil__Prachi": dhruvilPrachiData,
-  
-  "Manthan__Bhavya": manthanBhavyaData,
-  
-  "Utkarsh__Priyanshi": utkarshPriyanshiData,
+  Abhishek__Hemangi: abhishekHemangiData,
+
+  Dhruvil__Prachi: dhruvilPrachiData,
+
+  Manthan__Bhavya: manthanBhavyaData,
+
+  Utkarsh__Priyanshi: utkarshPriyanshiData,
 };
 
 // ======================================================
@@ -131,6 +132,9 @@ const BlurImage = ({ src, alt }) => {
         src={src}
         alt={alt}
         onLoad={() => setLoaded(true)}
+        onError={() => {
+          console.log("❌ IMAGE FAILED:", src);
+        }}
         style={{
           width: "100%",
           height: "100%",
@@ -385,7 +389,7 @@ const ImageGrid = () => {
               // 🔥 PRE-WEDDING COVER
               // ======================================================
               else if (category === "Pre-Wedding") {
-                cover = preWeddingCategories["Abhishek_Hemangi"]?.[0]?.url;
+                cover = preWeddingCategories.apurvDhanvi?.[0]?.url;
               }
 
               // ======================================================
@@ -558,13 +562,17 @@ const ImageGrid = () => {
               gap: 3,
             }}
           >
-            {Object.keys(preWeddingCategories).map((couple) => {
-              const cover = preWeddingCategories[couple]?.[0]?.url;
+            {Object.entries(preWeddingCategories).map(([key, data]) => {
+              const cover = data?.[0]?.url;
+
+              const formattedName = key
+                .replace(/([A-Z])/g, " $1")
+                .replace(/^./, (str) => str.toUpperCase());
 
               return (
                 <Paper
-                  key={couple}
-                  onClick={() => setSelectedPreWeddingCategory(couple)}
+                  key={key}
+                  onClick={() => setSelectedPreWeddingCategory(key)}
                   sx={{
                     height: 300,
 
@@ -583,7 +591,7 @@ const ImageGrid = () => {
                     },
                   }}
                 >
-                  <BlurImage src={cover} alt={couple} />
+                  <BlurImage src={cover} alt={formattedName} />
 
                   <Box
                     sx={{
@@ -606,7 +614,7 @@ const ImageGrid = () => {
                         fontWeight: 600,
                       }}
                     >
-                      {couple}
+                      {formattedName}
                     </Typography>
                   </Box>
                 </Paper>
