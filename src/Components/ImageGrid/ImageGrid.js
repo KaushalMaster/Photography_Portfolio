@@ -34,9 +34,9 @@ import jewelleryData from "../../data/jewellery.json";
 // 🔥 PRE-WEDDING DATA
 // ======================================================
 
-import apurvDhanviData from "../../data/Prewedding/Apurv-and-Dhanvi.json";
-import abhishekHemangiDataPre from "../../data/Prewedding/Abhishek-and-Hemangi.json";
-import utkarshPriyanshiDataPre from "../../data/Prewedding/Utkarsh-and-Priyanshi.json";
+import abhishek_HemangiData from "../../data/Prewedding/Abhishek-and-Hemangi.json";
+import apurv_DhanviData from "../../data/Prewedding/Apurv-and-Dhanvi.json";
+import utkarsh_PriyanshiData from "../../data/Prewedding/Utkarsh-and-Priyanshi.json";
 
 // ======================================================
 // 🔥 WEDDING DATA
@@ -55,11 +55,9 @@ import utkarshPriyanshiData from "../../data/Wedding/Utkarsh-and-Priyanshi.json"
 // ======================================================
 
 const preWeddingCategories = {
-  apurvDhanvi: apurvDhanviData,
-
-  abhishekHemangi: abhishekHemangiDataPre,
-
-  utkarshPriyanshi: utkarshPriyanshiDataPre,
+  "Apurv-and-Dhanvi": apurv_DhanviData,
+  "Abhishek-and-Hemangi": abhishek_HemangiData,
+  "Utkarsh-and-Priyanshi": utkarsh_PriyanshiData,
 };
 
 // ======================================================
@@ -67,13 +65,13 @@ const preWeddingCategories = {
 // ======================================================
 
 const weddingCategories = {
-  Abhishek__Hemangi: abhishekHemangiData,
+  "Abhishek And Hemangi": abhishekHemangiData,
 
-  Dhruvil__Prachi: dhruvilPrachiData,
+  "Dhruvil And Prachi": dhruvilPrachiData,
 
-  Manthan__Bhavya: manthanBhavyaData,
+  "Manthan And Bhavya": manthanBhavyaData,
 
-  Utkarsh__Priyanshi: utkarshPriyanshiData,
+  "Utkarsh And Priyanshi": utkarshPriyanshiData,
 };
 
 // ======================================================
@@ -132,9 +130,6 @@ const BlurImage = ({ src, alt }) => {
         src={src}
         alt={alt}
         onLoad={() => setLoaded(true)}
-        onError={() => {
-          console.log("❌ IMAGE FAILED:", src);
-        }}
         style={{
           width: "100%",
           height: "100%",
@@ -389,14 +384,14 @@ const ImageGrid = () => {
               // 🔥 PRE-WEDDING COVER
               // ======================================================
               else if (category === "Pre-Wedding") {
-                cover = preWeddingCategories.apurvDhanvi?.[0]?.url;
+                cover = preWeddingCategories["Apurv-and-Dhanvi"]?.[0]?.url;
               }
 
               // ======================================================
               // 🔥 WEDDING COVER
               // ======================================================
               else if (category === "Wedding") {
-                cover = weddingCategories["Abhishek__Hemangi"]?.[0]?.url;
+                cover = weddingCategories["Abhishek And Hemangi"]?.[0]?.url;
               }
 
               // ======================================================
@@ -562,17 +557,13 @@ const ImageGrid = () => {
               gap: 3,
             }}
           >
-            {Object.entries(preWeddingCategories).map(([key, data]) => {
-              const cover = data?.[0]?.url;
-
-              const formattedName = key
-                .replace(/([A-Z])/g, " $1")
-                .replace(/^./, (str) => str.toUpperCase());
+            {Object.keys(preWeddingCategories).map((couple) => {
+              const cover = preWeddingCategories[couple]?.[0]?.url;
 
               return (
                 <Paper
-                  key={key}
-                  onClick={() => setSelectedPreWeddingCategory(key)}
+                  key={couple}
+                  onClick={() => setSelectedPreWeddingCategory(couple)}
                   sx={{
                     height: 300,
 
@@ -591,7 +582,7 @@ const ImageGrid = () => {
                     },
                   }}
                 >
-                  <BlurImage src={cover} alt={formattedName} />
+                  <BlurImage src={cover} alt={couple} />
 
                   <Box
                     sx={{
@@ -614,7 +605,7 @@ const ImageGrid = () => {
                         fontWeight: 600,
                       }}
                     >
-                      {formattedName}
+                      {couple}
                     </Typography>
                   </Box>
                 </Paper>
