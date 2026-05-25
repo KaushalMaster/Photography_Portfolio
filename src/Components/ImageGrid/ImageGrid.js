@@ -385,7 +385,7 @@ const ImageGrid = () => {
               // 🔥 PRE-WEDDING COVER
               // ======================================================
               else if (category === "Pre-Wedding") {
-                cover = preWeddingCategories["Apurv_Dhanvi"]?.[0]?.url;
+                cover = preWeddingCategories["Abhishek_Hemangi"]?.[0]?.url;
               }
 
               // ======================================================
