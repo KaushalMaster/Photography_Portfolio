@@ -34,8 +34,8 @@ import jewelleryData from "../../data/jewellery.json";
 // 🔥 PRE-WEDDING DATA
 // ======================================================
 
-import abhishek_HemangiData from "../../data/Prewedding/Abhishek-and-Hemangi.json";
 import apurv_DhanviData from "../../data/Prewedding/Apurv-and-Dhanvi.json";
+import abhishek_HemangiData from "../../data/Prewedding/Abhishek-and-Hemangi.json";
 import utkarsh_PriyanshiData from "../../data/Prewedding/Utkarsh-and-Priyanshi.json";
 
 // ======================================================
@@ -55,23 +55,24 @@ import utkarshPriyanshiData from "../../data/Wedding/Utkarsh-and-Priyanshi.json"
 // ======================================================
 
 const preWeddingCategories = {
-  "Apurv & Dhanvi": apurv_DhanviData,
-  "Abhishek & Hemangi": abhishek_HemangiData,
-  "Utkarsh & Priyanshi": utkarsh_PriyanshiData,
+  "Apurv_Dhanvi": apurv_DhanviData,
+  "Abhishek_Hemangi": abhishek_HemangiData,
+  "Utkarsh_Priyanshi": utkarsh_PriyanshiData,
 };
+
 
 // ======================================================
 // 🔥 WEDDING CATEGORIES
 // ======================================================
 
 const weddingCategories = {
-  "Abhishek And Hemangi": abhishekHemangiData,
-
-  "Dhruvil And Prachi": dhruvilPrachiData,
-
-  "Manthan And Bhavya": manthanBhavyaData,
-
-  "Utkarsh And Priyanshi": utkarshPriyanshiData,
+  "Abhishek__Hemangi": abhishekHemangiData,
+  
+  "Dhruvil__Prachi": dhruvilPrachiData,
+  
+  "Manthan__Bhavya": manthanBhavyaData,
+  
+  "Utkarsh__Priyanshi": utkarshPriyanshiData,
 };
 
 // ======================================================
@@ -384,14 +385,14 @@ const ImageGrid = () => {
               // 🔥 PRE-WEDDING COVER
               // ======================================================
               else if (category === "Pre-Wedding") {
-                cover = preWeddingCategories["Apurv & Dhanvi"]?.[0]?.url;
+                cover = preWeddingCategories["Apurv_Dhanvi"]?.[0]?.url;
               }
 
               // ======================================================
               // 🔥 WEDDING COVER
               // ======================================================
               else if (category === "Wedding") {
-                cover = weddingCategories["Abhishek And Hemangi"]?.[0]?.url;
+                cover = weddingCategories["Abhishek__Hemangi"]?.[0]?.url;
               }
 
               // ======================================================
