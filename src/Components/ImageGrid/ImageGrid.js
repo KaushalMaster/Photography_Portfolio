@@ -35,6 +35,7 @@ import jewelleryData from "../../data/jewellery.json";
 // 🔥 PORTRAITS DATA
 // ======================================================
 
+import nainaSawlaniData from "../../data/Potraits/Naina_Sawlani.json";
 import rohanShahData from "../../data/Potraits/Rohan_Shah.json";
 import tammyBatariaData from "../../data/Potraits/Tammy_Bataria.json";
 import aanchalData from "../../data/Potraits/Aanchal_Shah.json";
@@ -101,6 +102,7 @@ const productCategories = {
 // ======================================================
 
 const portraitsCategories = {
+  Naina_Sawlani: nainaSawlaniData,
   Rohan_Shah: rohanShahData,
   Tammy_Bataria: tammyBatariaData,
   Aanchal_Shah: aanchalData,
@@ -447,7 +449,7 @@ const ImageGrid = () => {
               // 🔥 PORTRAITS COVER
               // ======================================================
               else if (category === "Portraits") {
-                cover = portraitsCategories["Rohan_Shah"]?.[0]?.url;
+                cover = portraitsCategories["Naina_Sawlani"]?.[0]?.url;
               }
 
               // ======================================================
