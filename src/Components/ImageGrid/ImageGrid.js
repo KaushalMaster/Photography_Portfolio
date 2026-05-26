@@ -8,7 +8,9 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+
 import Masonry from "@mui/lab/Masonry";
+
 import "@fontsource/roboto";
 
 // ======================================================
@@ -19,7 +21,6 @@ import engagementCeremonyData from "../../data/engagement-ceremony.json";
 import eventsData from "../../data/events.json";
 import concertsData from "../../data/concerts.json";
 import streetData from "../../data/street.json";
-import portraitsData from "../../data/potraits.json";
 import foodData from "../../data/food.json";
 import babyData from "../../data/baby.json";
 
@@ -29,6 +30,24 @@ import babyData from "../../data/baby.json";
 
 import productsData from "../../data/products.json";
 import jewelleryData from "../../data/jewellery.json";
+
+// ======================================================
+// 🔥 PORTRAITS DATA
+// ======================================================
+
+import rohanShahData from "../../data/Potraits/Rohan_Shah.json";
+import tammyBatariaData from "../../data/Potraits/Tammy_Bataria.json";
+import aanchalData from "../../data/Potraits/Aanchal_Shah.json";
+import deepaTrivediData from "../../data/Potraits/Deepa_Trivedi.json";
+import himanshiSoniData from "../../data/Potraits/Himanshi_Soni.json";
+import molicaData from "../../data/Potraits/Molica.json";
+import parikshitData from "../../data/Potraits/Parikshit.json";
+import celebData from "../../data/Potraits/Celeb.json";
+import meeraChopraData from "../../data/Potraits/Meera_Chopra.json";
+import nagaChaitanyaData from "../../data/Potraits/Naga_Chaitanya.json";
+import nagarjunaData from "../../data/Potraits/Nagarjuna.json";
+import sobhitaData from "../../data/Potraits/Sobhita.json";
+import taahaShahData from "../../data/Potraits/Taaha_Shah.json";
 
 // ======================================================
 // 🔥 PRE-WEDDING DATA
@@ -43,11 +62,8 @@ import utkarsh_PriyanshiData from "../../data/Prewedding/Utkarsh-and-Priyanshi.j
 // ======================================================
 
 import abhishekHemangiData from "../../data/Wedding/Abhishek-and-Hemangi.json";
-
 import dhruvilPrachiData from "../../data/Wedding/Dhruvil-and-Prachi.json";
-
 import manthanBhavyaData from "../../data/Wedding/Manthan-and-Bhavya.json";
-
 import utkarshPriyanshiData from "../../data/Wedding/Utkarsh-and-Priyanshi.json";
 
 // ======================================================
@@ -66,11 +82,8 @@ const preWeddingCategories = {
 
 const weddingCategories = {
   "Abhishek And Hemangi": abhishekHemangiData,
-
   "Dhruvil And Prachi": dhruvilPrachiData,
-
   "Manthan And Bhavya": manthanBhavyaData,
-
   "Utkarsh And Priyanshi": utkarshPriyanshiData,
 };
 
@@ -81,6 +94,26 @@ const weddingCategories = {
 const productCategories = {
   Jewellery: jewelleryData,
   Products: productsData,
+};
+
+// ======================================================
+// 🔥 PORTRAITS CATEGORIES
+// ======================================================
+
+const portraitsCategories = {
+  Rohan_Shah: rohanShahData,
+  Tammy_Bataria: tammyBatariaData,
+  Aanchal_Shah: aanchalData,
+  Deepa_Trivedi: deepaTrivediData,
+  Himanshi_Soni: himanshiSoniData,
+  Molica: molicaData,
+  Parikshit: parikshitData,
+  Celeb: celebData,
+  Meera_Chopra: meeraChopraData,
+  Naga_Chaitanya: nagaChaitanyaData,
+  Nagarjuna: nagarjunaData,
+  Sobhita: sobhitaData,
+  Taaha_Shah: taahaShahData,
 };
 
 // ======================================================
@@ -100,7 +133,7 @@ const categoryData = {
 
   "Engagement Ceremony": engagementCeremonyData,
 
-  Portraits: portraitsData,
+  Portraits: portraitsCategories,
 
   Street: streetData,
 
@@ -165,6 +198,9 @@ const ImageGrid = () => {
     useState(null);
 
   const [selectedWeddingCategory, setSelectedWeddingCategory] = useState(null);
+
+  const [selectedPortraitCategory, setSelectedPortraitCategory] =
+    useState(null);
 
   // ======================================================
   // 🔥 IMAGE STATES
@@ -233,6 +269,17 @@ const ImageGrid = () => {
     }
 
     // ======================================================
+    // 🔥 PORTRAITS
+    // ======================================================
+    else if (selectedCategory === "Portraits") {
+      if (selectedPortraitCategory) {
+        setImages(portraitsCategories[selectedPortraitCategory] || []);
+      } else {
+        setImages([]);
+      }
+    }
+
+    // ======================================================
     // 🔥 NORMAL CATEGORY
     // ======================================================
     else {
@@ -246,12 +293,10 @@ const ImageGrid = () => {
     }, 300);
   }, [
     selectedCategory,
-
     selectedProductCategory,
-
     selectedPreWeddingCategory,
-
     selectedWeddingCategory,
+    selectedPortraitCategory,
   ]);
 
   const displayedImages = images.slice(0, currentBatch);
@@ -313,6 +358,8 @@ const ImageGrid = () => {
               setSelectedPreWeddingCategory(null);
 
               setSelectedWeddingCategory(null);
+
+              setSelectedPortraitCategory(null);
             }}
             sx={{
               mr: 1,
@@ -335,6 +382,8 @@ const ImageGrid = () => {
                 setSelectedPreWeddingCategory(null);
 
                 setSelectedWeddingCategory(null);
+
+                setSelectedPortraitCategory(null);
               }}
               sx={{
                 mr: 1,
@@ -395,6 +444,13 @@ const ImageGrid = () => {
               }
 
               // ======================================================
+              // 🔥 PORTRAITS COVER
+              // ======================================================
+              else if (category === "Portraits") {
+                cover = portraitsCategories["Rohan_Shah"]?.[0]?.url;
+              }
+
+              // ======================================================
               // 🔥 NORMAL COVER
               // ======================================================
               else {
@@ -412,6 +468,8 @@ const ImageGrid = () => {
                     setSelectedPreWeddingCategory(null);
 
                     setSelectedWeddingCategory(null);
+
+                    setSelectedPortraitCategory(null);
                   }}
                   sx={{
                     height: 300,
@@ -681,6 +739,81 @@ const ImageGrid = () => {
                       }}
                     >
                       {couple}
+                    </Typography>
+                  </Box>
+                </Paper>
+              );
+            })}
+          </Box>
+        ) : selectedCategory === "Portraits" && !selectedPortraitCategory ? (
+          // ======================================================
+          // 🔥 PORTRAITS PEOPLE
+          // ======================================================
+
+          <Box
+            sx={{
+              display: "grid",
+
+              gridTemplateColumns: {
+                xs: "1fr",
+
+                sm: "1fr 1fr",
+
+                md: "1fr 1fr",
+              },
+
+              gap: 3,
+            }}
+          >
+            {Object.keys(portraitsCategories).map((person) => {
+              const cover = portraitsCategories[person]?.[0]?.url;
+
+              return (
+                <Paper
+                  key={person}
+                  onClick={() => setSelectedPortraitCategory(person)}
+                  sx={{
+                    height: 300,
+
+                    borderRadius: "20px",
+
+                    overflow: "hidden",
+
+                    cursor: "pointer",
+
+                    position: "relative",
+
+                    transition: "0.4s",
+
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <BlurImage src={cover} alt={person} />
+
+                  <Box
+                    sx={{
+                      position: "absolute",
+
+                      bottom: 0,
+
+                      width: "100%",
+
+                      p: 2,
+
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: "#fff",
+
+                        fontWeight: 600,
+                      }}
+                    >
+                      {person.replaceAll("_", " ")}
                     </Typography>
                   </Box>
                 </Paper>
