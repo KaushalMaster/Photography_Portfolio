@@ -72,9 +72,9 @@ import utkarshPriyanshiData from "../../data/Wedding/Utkarsh-and-Priyanshi.json"
 // ======================================================
 
 const preWeddingCategories = {
-  "Apurv-and-Dhanvi": apurv_DhanviData,
-  "Abhishek-and-Hemangi": abhishek_HemangiData,
-  "Utkarsh-and-Priyanshi": utkarsh_PriyanshiData,
+  "Apurv | Dhanvi": apurv_DhanviData,
+  "Abhishek | Hemangi": abhishek_HemangiData,
+  "Utkarsh | Priyanshi": utkarsh_PriyanshiData,
 };
 
 // ======================================================
@@ -82,10 +82,10 @@ const preWeddingCategories = {
 // ======================================================
 
 const weddingCategories = {
-  "Abhishek And Hemangi": abhishekHemangiData,
-  "Dhruvil And Prachi": dhruvilPrachiData,
-  "Manthan And Bhavya": manthanBhavyaData,
-  "Utkarsh And Priyanshi": utkarshPriyanshiData,
+  "Abhishek | Hemangi": abhishekHemangiData,
+  "Dhruvil | Prachi": dhruvilPrachiData,
+  "Manthan | Bhavya": manthanBhavyaData,
+  "Utkarsh | Priyanshi": utkarshPriyanshiData,
 };
 
 // ======================================================
@@ -229,62 +229,33 @@ const ImageGrid = () => {
   useEffect(() => {
     setLoading(true);
 
-    // ======================================================
-    // 🔥 ALL
-    // ======================================================
-
     if (selectedCategory === "All") {
       setImages([]);
-    }
-
-    // ======================================================
-    // 🔥 PRODUCTS
-    // ======================================================
-    else if (selectedCategory === "Products") {
+    } else if (selectedCategory === "Products") {
       if (selectedProductCategory) {
         setImages(productCategories[selectedProductCategory] || []);
       } else {
         setImages([]);
       }
-    }
-
-    // ======================================================
-    // 🔥 PRE-WEDDING
-    // ======================================================
-    else if (selectedCategory === "Pre-Wedding") {
+    } else if (selectedCategory === "Pre-Wedding") {
       if (selectedPreWeddingCategory) {
         setImages(preWeddingCategories[selectedPreWeddingCategory] || []);
       } else {
         setImages([]);
       }
-    }
-
-    // ======================================================
-    // 🔥 WEDDING
-    // ======================================================
-    else if (selectedCategory === "Wedding") {
+    } else if (selectedCategory === "Wedding") {
       if (selectedWeddingCategory) {
         setImages(weddingCategories[selectedWeddingCategory] || []);
       } else {
         setImages([]);
       }
-    }
-
-    // ======================================================
-    // 🔥 PORTRAITS
-    // ======================================================
-    else if (selectedCategory === "Portraits") {
+    } else if (selectedCategory === "Portraits") {
       if (selectedPortraitCategory) {
         setImages(portraitsCategories[selectedPortraitCategory] || []);
       } else {
         setImages([]);
       }
-    }
-
-    // ======================================================
-    // 🔥 NORMAL CATEGORY
-    // ======================================================
-    else {
+    } else {
       setImages(categoryData[selectedCategory] || []);
     }
 
@@ -303,6 +274,20 @@ const ImageGrid = () => {
 
   const displayedImages = images.slice(0, currentBatch);
 
+  const handleGoBack = () => {
+    if (selectedProductCategory) {
+      setSelectedProductCategory(null);
+    } else if (selectedPreWeddingCategory) {
+      setSelectedPreWeddingCategory(null);
+    } else if (selectedWeddingCategory) {
+      setSelectedWeddingCategory(null);
+    } else if (selectedPortraitCategory) {
+      setSelectedPortraitCategory(null);
+    } else if (selectedCategory !== "All") {
+      setSelectedCategory("All");
+    }
+  };
+
   // ======================================================
   // 🔥 RENDER
   // ======================================================
@@ -314,10 +299,6 @@ const ImageGrid = () => {
         minHeight: "100vh",
       }}
     >
-      {/* ====================================================== */}
-      {/* 🔥 LOGO */}
-      {/* ====================================================== */}
-
       <Box
         sx={{
           display: "flex",
@@ -337,10 +318,6 @@ const ImageGrid = () => {
       </Box>
 
       <Box sx={{ padding: "20px" }}>
-        {/* ====================================================== */}
-        {/* 🔥 CATEGORY CHIPS */}
-        {/* ====================================================== */}
-
         <Box
           sx={{
             display: "flex",
@@ -400,9 +377,55 @@ const ImageGrid = () => {
           ))}
         </Box>
 
-        {/* ====================================================== */}
-        {/* 🔥 ALL CATEGORY CARDS */}
-        {/* ====================================================== */}
+        {(selectedCategory !== "All" ||
+          selectedProductCategory ||
+          selectedPreWeddingCategory ||
+          selectedWeddingCategory ||
+          selectedPortraitCategory) && (
+          <Box
+            sx={{
+              position: "sticky",
+              top: 70,
+              zIndex: 1000,
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              width: "5%",
+              mb: 2,
+            }}
+          >
+            <Typography
+              onClick={handleGoBack}
+              sx={{
+                backgroundColor: "#121212",
+
+                color: "#fff",
+                cursor: "pointer",
+                border: "1px solid white",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+
+                mt: 1,
+                px: 3,
+                py: 1,
+
+                borderRadius: "50px",
+
+                fontSize: "14px",
+
+                transition: "0.3s",
+
+                "&:hover": {
+                  backgroundColor: "#fff",
+                  color: "#000",
+                },
+              }}
+            >
+              ←
+            </Typography>
+          </Box>
+        )}
 
         {selectedCategory === "All" ? (
           <Box
@@ -423,39 +446,15 @@ const ImageGrid = () => {
             {categories.map((category) => {
               let cover;
 
-              // ======================================================
-              // 🔥 PRODUCTS COVER
-              // ======================================================
-
               if (category === "Products") {
                 cover = productCategories.Products?.[0]?.url;
-              }
-
-              // ======================================================
-              // 🔥 PRE-WEDDING COVER
-              // ======================================================
-              else if (category === "Pre-Wedding") {
-                cover = preWeddingCategories["Apurv-and-Dhanvi"]?.[0]?.url;
-              }
-
-              // ======================================================
-              // 🔥 WEDDING COVER
-              // ======================================================
-              else if (category === "Wedding") {
-                cover = weddingCategories["Abhishek And Hemangi"]?.[0]?.url;
-              }
-
-              // ======================================================
-              // 🔥 PORTRAITS COVER
-              // ======================================================
-              else if (category === "Portraits") {
+              } else if (category === "Pre-Wedding") {
+                cover = preWeddingCategories["Apurv | Dhanvi"]?.[0]?.url;
+              } else if (category === "Wedding") {
+                cover = weddingCategories["Abhishek | Hemangi"]?.[0]?.url;
+              } else if (category === "Portraits") {
                 cover = portraitsCategories["Naina_Sawlani"]?.[0]?.url;
-              }
-
-              // ======================================================
-              // 🔥 NORMAL COVER
-              // ======================================================
-              else {
+              } else {
                 cover = categoryData[category]?.[0]?.url;
               }
 
@@ -522,10 +521,6 @@ const ImageGrid = () => {
             })}
           </Box>
         ) : selectedCategory === "Products" && !selectedProductCategory ? (
-          // ======================================================
-          // 🔥 PRODUCT SUB CATEGORY CARDS
-          // ======================================================
-
           <Box
             sx={{
               display: "grid",
@@ -549,7 +544,7 @@ const ImageGrid = () => {
                   key={productType}
                   onClick={() => setSelectedProductCategory(productType)}
                   sx={{
-                    height: 300,
+                    height: "100%",
 
                     borderRadius: "20px",
 
@@ -585,8 +580,10 @@ const ImageGrid = () => {
                     <Typography
                       sx={{
                         color: "#fff",
-
-                        fontWeight: 600,
+                        fontFamily: "Kugile",
+                        fontSize: "1.7rem",
+                        letterSpacing: "2px",
+                        fontWeight: 200,
                       }}
                     >
                       {productType}
@@ -598,10 +595,6 @@ const ImageGrid = () => {
           </Box>
         ) : selectedCategory === "Pre-Wedding" &&
           !selectedPreWeddingCategory ? (
-          // ======================================================
-          // 🔥 PRE-WEDDING COUPLES
-          // ======================================================
-
           <Box
             sx={{
               display: "grid",
@@ -625,7 +618,7 @@ const ImageGrid = () => {
                   key={couple}
                   onClick={() => setSelectedPreWeddingCategory(couple)}
                   sx={{
-                    height: 300,
+                    height: "100%",
 
                     borderRadius: "20px",
 
@@ -661,8 +654,10 @@ const ImageGrid = () => {
                     <Typography
                       sx={{
                         color: "#fff",
-
-                        fontWeight: 600,
+                        fontFamily: "Kugile",
+                        fontSize: "1.7rem",
+                        letterSpacing: "5px",
+                        fontWeight: 400,
                       }}
                     >
                       {couple}
@@ -673,10 +668,6 @@ const ImageGrid = () => {
             })}
           </Box>
         ) : selectedCategory === "Wedding" && !selectedWeddingCategory ? (
-          // ======================================================
-          // 🔥 WEDDING COUPLES
-          // ======================================================
-
           <Box
             sx={{
               display: "grid",
@@ -700,7 +691,7 @@ const ImageGrid = () => {
                   key={couple}
                   onClick={() => setSelectedWeddingCategory(couple)}
                   sx={{
-                    height: 300,
+                    height: "100%",
 
                     borderRadius: "20px",
 
@@ -736,8 +727,10 @@ const ImageGrid = () => {
                     <Typography
                       sx={{
                         color: "#fff",
-
-                        fontWeight: 600,
+                        fontFamily: "Kugile",
+                        fontSize: "1.7rem",
+                        letterSpacing: "2px",
+                        fontWeight: 200,
                       }}
                     >
                       {couple}
@@ -748,10 +741,6 @@ const ImageGrid = () => {
             })}
           </Box>
         ) : selectedCategory === "Portraits" && !selectedPortraitCategory ? (
-          // ======================================================
-          // 🔥 PORTRAITS PEOPLE
-          // ======================================================
-
           <Box
             sx={{
               display: "grid",
@@ -775,7 +764,7 @@ const ImageGrid = () => {
                   key={person}
                   onClick={() => setSelectedPortraitCategory(person)}
                   sx={{
-                    height: 300,
+                    height: "100%",
 
                     borderRadius: "20px",
 
@@ -811,8 +800,10 @@ const ImageGrid = () => {
                     <Typography
                       sx={{
                         color: "#fff",
-
-                        fontWeight: 600,
+                        fontFamily: "Kugile",
+                        fontSize: "1.9rem",
+                        letterSpacing: "2px",
+                        fontWeight: 200,
                       }}
                     >
                       {person.replaceAll("_", " ")}
@@ -823,10 +814,6 @@ const ImageGrid = () => {
             })}
           </Box>
         ) : (
-          // ======================================================
-          // 🔥 IMAGE GRID
-          // ======================================================
-
           <Box
             sx={{
               animation: "fadeIn 0.5s ease",
@@ -864,10 +851,6 @@ const ImageGrid = () => {
                 </Typography>
               )}
             </Masonry>
-
-            {/* ====================================================== */}
-            {/* 🔥 LOAD MORE */}
-            {/* ====================================================== */}
 
             {displayedImages.length < images.length && (
               <Box textAlign="center" mt={3}>
