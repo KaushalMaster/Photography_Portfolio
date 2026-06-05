@@ -32,6 +32,12 @@ import productsData from "../../data/products.json";
 import jewelleryData from "../../data/jewellery.json";
 
 // ======================================================
+// 🔥 FASHION DATA
+// ======================================================
+
+import jimmyNeelamData from "../../data/Fashion/Jimmy_Neelam.json";
+
+// ======================================================
 // 🔥 PORTRAITS DATA
 // ======================================================
 
@@ -119,6 +125,14 @@ const portraitsCategories = {
 };
 
 // ======================================================
+// 🔥 FASHION CATEGORIES
+// ======================================================
+
+const fashionCategories = {
+  Jimmy_Neelam: jimmyNeelamData,
+};
+
+// ======================================================
 // 🔥 MAIN CATEGORY MAP
 // ======================================================
 
@@ -130,6 +144,8 @@ const categoryData = {
   Wedding: weddingCategories,
 
   "Pre-Wedding": preWeddingCategories,
+
+  Fashion: fashionCategories,
 
   Products: productCategories,
 
@@ -204,6 +220,8 @@ const ImageGrid = () => {
   const [selectedPortraitCategory, setSelectedPortraitCategory] =
     useState(null);
 
+  const [selectedFashionCategory, setSelectedFashionCategory] = useState(null);
+
   // ======================================================
   // 🔥 IMAGE STATES
   // ======================================================
@@ -255,6 +273,12 @@ const ImageGrid = () => {
       } else {
         setImages([]);
       }
+    } else if (selectedCategory === "Fashion") {
+      if (selectedFashionCategory) {
+        setImages(fashionCategories[selectedFashionCategory] || []);
+      } else {
+        setImages([]);
+      }
     } else {
       setImages(categoryData[selectedCategory] || []);
     }
@@ -270,6 +294,7 @@ const ImageGrid = () => {
     selectedPreWeddingCategory,
     selectedWeddingCategory,
     selectedPortraitCategory,
+    selectedFashionCategory,
   ]);
 
   const displayedImages = images.slice(0, currentBatch);
@@ -283,6 +308,8 @@ const ImageGrid = () => {
       setSelectedWeddingCategory(null);
     } else if (selectedPortraitCategory) {
       setSelectedPortraitCategory(null);
+    } else if (selectedFashionCategory) {
+      setSelectedFashionCategory(null);
     } else if (selectedCategory !== "All") {
       setSelectedCategory("All");
     }
@@ -339,6 +366,8 @@ const ImageGrid = () => {
               setSelectedWeddingCategory(null);
 
               setSelectedPortraitCategory(null);
+
+              setSelectedFashionCategory(null);
             }}
             sx={{
               mr: 1,
@@ -363,6 +392,7 @@ const ImageGrid = () => {
                 setSelectedWeddingCategory(null);
 
                 setSelectedPortraitCategory(null);
+                setSelectedFashionCategory(null);
               }}
               sx={{
                 mr: 1,
@@ -454,6 +484,8 @@ const ImageGrid = () => {
                 cover = weddingCategories["Abhishek | Hemangi"]?.[0]?.url;
               } else if (category === "Portraits") {
                 cover = portraitsCategories["Naina_Sawlani"]?.[0]?.url;
+              } else if (category === "Fashion") {
+                cover = fashionCategories["Jimmy_Neelam"]?.[0]?.url;
               } else {
                 cover = categoryData[category]?.[0]?.url;
               }
@@ -471,6 +503,7 @@ const ImageGrid = () => {
                     setSelectedWeddingCategory(null);
 
                     setSelectedPortraitCategory(null);
+                    setSelectedFashionCategory(null);
                   }}
                   sx={{
                     height: 300,
@@ -807,6 +840,66 @@ const ImageGrid = () => {
                       }}
                     >
                       {person.replaceAll("_", " ")}
+                    </Typography>
+                  </Box>
+                </Paper>
+              );
+            })}
+          </Box>
+        ) : selectedCategory === "Fashion" && !selectedFashionCategory ? (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr",
+                md: "1fr 1fr",
+              },
+              gap: 3,
+            }}
+          >
+            {Object.keys(fashionCategories).map((fashion) => {
+              const cover = fashionCategories[fashion]?.[0]?.url;
+
+              return (
+                <Paper
+                  key={fashion}
+                  onClick={() => setSelectedFashionCategory(fashion)}
+                  sx={{
+                    height: "100%",
+                    borderRadius: "20px",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    position: "relative",
+                    transition: "0.4s",
+
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <BlurImage src={cover} alt={fashion} />
+
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: 0,
+                      width: "100%",
+                      p: 2,
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.9), transparent)",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: "#fff",
+                        fontFamily: "Kugile",
+                        fontSize: "1.9rem",
+                        letterSpacing: "2px",
+                        fontWeight: 200,
+                      }}
+                    >
+                      {fashion.replaceAll("_", " ")}
                     </Typography>
                   </Box>
                 </Paper>

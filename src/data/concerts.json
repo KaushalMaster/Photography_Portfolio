@@ -1,5 +1,11 @@
 [
   {
+    "id": "_DSC6870",
+    "name": "Event Image 1",
+    "category": "events",
+    "url": "/Events/_DSC6870.jpeg"
+  },
+  {
     "id": "_DSC6728",
     "name": "Event Image 1",
     "category": "events",
@@ -54,12 +60,6 @@
     "name": "Event Image 1",
     "category": "events",
     "url": "/Events/_DSC6868.jpeg"
-  },
-  {
-    "id": "_DSC6870",
-    "name": "Event Image 1",
-    "category": "events",
-    "url": "/Events/_DSC6870.jpeg"
   },
   {
     "id": "_DSC6886",
