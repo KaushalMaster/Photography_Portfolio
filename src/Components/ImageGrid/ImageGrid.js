@@ -36,6 +36,7 @@ import jewelleryData from "../../data/jewellery.json";
 // ======================================================
 
 import jimmyNeelamData from "../../data/Fashion/Jimmy_Neelam.json";
+import tyaaniByKaranJoharRakshaBandhanEditionData from "../../data/Fashion/Tyaani_By_Karan_Johar.json";
 
 // ======================================================
 // 🔥 PORTRAITS DATA
@@ -130,6 +131,8 @@ const portraitsCategories = {
 
 const fashionCategories = {
   Jimmy_Neelam: jimmyNeelamData,
+  Tyaani_by_Karan_Johar_RakshaBandhanEdition:
+    tyaaniByKaranJoharRakshaBandhanEditionData,
 };
 
 // ======================================================
