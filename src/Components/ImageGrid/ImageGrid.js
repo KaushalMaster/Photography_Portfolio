@@ -40,6 +40,7 @@ import tyaaniJewelleryByKaranJoharXJardoshData from "../../data/Fashion/Tyaani_J
 import tyaaniByKaranJoharRakshaBandhanEditionData from "../../data/Fashion/Tyaani_By_Karan_Johar.json";
 import maitriFashionCoData from "../../data/Fashion/Maitri.co.json";
 import honeyRentelBoutiqueData from "../../data/Fashion/HoneyRentelBoutique.json";
+import hetshreePatelData from "../../data/Fashion/HetshreePatel.json";
 
 // ======================================================
 // 🔥 PORTRAITS DATA
@@ -134,11 +135,13 @@ const portraitsCategories = {
 
 const fashionCategories = {
   Jimmy_Neelam: jimmyNeelamData,
-  Tyaani_Jewellery_By_Karan_Johar_X_Jardosh: tyaaniJewelleryByKaranJoharXJardoshData,
+  Tyaani_Jewellery_By_Karan_Johar_X_Jardosh:
+    tyaaniJewelleryByKaranJoharXJardoshData,
   Tyaani_by_Karan_Johar_RakshaBandhanEdition:
     tyaaniByKaranJoharRakshaBandhanEditionData,
   Maitri_co: maitriFashionCoData,
   HoneyRentelBoutique: honeyRentelBoutiqueData,
+  Hetshree_Patel: hetshreePatelData,
 };
 
 // ======================================================
