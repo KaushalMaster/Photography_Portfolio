@@ -40,7 +40,7 @@ import tyaaniJewelleryByKaranJoharXJardoshData from "../../data/Fashion/Tyaani_J
 import tyaaniByKaranJoharRakshaBandhanEditionData from "../../data/Fashion/Tyaani_By_Karan_Johar.json";
 import maitriFashionCoData from "../../data/Fashion/Maitri.co.json";
 import honeyRentelBoutiqueData from "../../data/Fashion/HoneyRentelBoutique.json";
-// import hetshreePatelData from "../../data/Fashion/HetshreePatel.json";
+import hetshreePatelData from "../../data/Fashion/HetshreePatel.json";
 
 // ======================================================
 // 🔥 PORTRAITS DATA
@@ -141,7 +141,7 @@ const fashionCategories = {
     tyaaniByKaranJoharRakshaBandhanEditionData,
   Maitri_co: maitriFashionCoData,
   HoneyRentelBoutique: honeyRentelBoutiqueData,
-  // Hetshree_Patel: hetshreePatelData,
+  Hetshree_Patel: hetshreePatelData,
 };
 
 // ======================================================
